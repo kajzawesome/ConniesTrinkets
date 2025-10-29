@@ -1,0 +1,62 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  background: #fdf8f4;
+  color: #444;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  color: #5c4033;
+}
+
+header {
+  background: #f0e2d0;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #e1c6aa;
+}
+
+a {
+  text-decoration: none;
+  color: #b77b5c;
+  margin: 0 0.5rem;
+}
+
+main {
+  padding: 2rem;
+}
+
+.button, button {
+  background: #b77b5c;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #a36b50;
+}
+
+.item {
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.claimed {
+  color: #888;
+  font-style: italic;
+}
+
+.error {
+  color: red;
+}

@@ -1,1 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Account | Grandma’s Legacy</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Welcome, <%= user %></h1>
+    <nav>
+      <a href="/market">Back to Market</a>
+    </nav>
+  </header>
 
+  <main class="account">
+    <h2>Your Claimed Items</h2>
+    <% if (items.length > 0) { %>
+      <ul>
+        <% items.forEach(i => { %>
+          <li><strong><%= i.name %></strong> — <%= i.desc %></li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>You haven’t claimed any items yet.</p>
+    <% } %>
+  </main>
+</body>
+</html>

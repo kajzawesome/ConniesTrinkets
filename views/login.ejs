@@ -1,1 +1,21 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Family Login | Grandma’s Legacy</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main class="login">
+    <h2>Welcome, Family</h2>
+    <p>Please enter the shared family password to continue.</p>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <form method="POST" action="/login">
+      <input type="password" name="password" placeholder="Family Password" required />
+      <button type="submit">Enter</button>
+    </form>
+  </main>
+</body>
+</html>
