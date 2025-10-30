@@ -1,62 +1,391 @@
-body {
-  font-family: 'Open Sans', sans-serif;
-  background: #fdf8f4;
-  color: #444;
+/* ===============================
+   Grandma’s Legacy — Global Styles
+   =============================== */
+
+/* 🌿 Typography & Base Colors */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Open+Sans:wght@400;600&display=swap');
+
+:root {
+  --cream: #fdf8f4;
+  --beige: #f9f5f0;
+  --tan: #f0e2d0;
+  --brown: #5c4033;
+  --accent: #b77b5c;
+  --accent-dark: #a36b50;
+  --text: #444;
+  --muted: #7a5a44;
+  --shadow: rgba(0, 0, 0, 0.08);
+}
+
+/* 🌼 Base Reset */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-h1, h2, h3 {
-  font-family: 'Playfair Display', serif;
-  color: #5c4033;
+body {
+  font-family: 'Open Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
 }
 
+/* 🌿 Headings */
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  color: var(--brown);
+  margin-bottom: 0.8rem;
+}
+
+/* 💛 Buttons & Links */
+a, .button, button {
+  text-decoration: none;
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-weight: 600;
+}
+
+a:hover, .button:hover, button:hover {
+  background: var(--accent-dark);
+}
+
+/* 💬 Error Messages */
+.error {
+  color: #b33a3a;
+  background: #fbeaea;
+  border: 1px solid #f0c6c6;
+  padding: 0.7rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* 🌺 Header & Navigation */
 header {
-  background: #f0e2d0;
+  background: var(--tan);
+  border-bottom: 2px solid #e1c6aa;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #e1c6aa;
+  flex-wrap: wrap;
 }
 
-a {
-  text-decoration: none;
-  color: #b77b5c;
-  margin: 0 0.5rem;
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
 }
 
-main {
+nav a {
+  background: transparent;
+  color: var(--accent-dark);
+  font-weight: 600;
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+nav a:hover {
+  background: var(--accent-dark);
+  color: white;
+}
+
+/* 🌷 Home Page */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, var(--beige), var(--tan));
+  text-align: center;
   padding: 2rem;
 }
 
-.button, button {
-  background: #b77b5c;
-  color: white;
-  border: none;
-  padding: 0.7rem 1.2rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
+.home-title {
+  font-size: 3rem;
+  color: var(--brown);
 }
 
-button:hover {
-  background: #a36b50;
+.home-subtitle {
+  font-size: 1.2rem;
+  max-width: 600px;
+  color: var(--muted);
+  margin: 1.5rem 0;
+  line-height: 1.6;
+}
+
+.memory-quote {
+  font-style: italic;
+  color: var(--muted);
+  margin: 1rem 0 2rem;
+}
+
+/* 🪞 Login Page */
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.login form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px var(--shadow);
+  width: 300px;
+}
+
+.login input {
+  width: 100%;
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* 🏷️ Market (Listings) */
+.market {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
 }
 
 .item {
   background: white;
-  border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 2px 6px var(--shadow);
+  text-align: center;
+}
+
+.item h3 {
+  margin-bottom: 0.6rem;
+}
+
+.item p {
+  color: var(--muted);
+  margin-bottom: 1rem;
 }
 
 .claimed {
-  color: #888;
+  color: #777;
   font-style: italic;
 }
 
-.error {
-  color: red;
+/* 👤 Account Page */
+.account {
+  padding: 2rem;
+}
+
+.account ul {
+  list-style: none;
+  padding: 0;
+}
+
+.account li {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 5px var(--shadow);
+}
+
+/* 🌸 Footer */
+footer {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* 📱 Responsive Adjustments */
+@media (max-width: 700px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .home-title {
+    font-size: 2.3rem;
+  }
+
+  .market {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== Header Navigation ========== */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 2.5rem;
+  background: var(--tan);
+  border-bottom: 2px solid #e1c6aa;
+  flex-wrap: wrap;
+}
+
+.logo h2 {
+  font-family: 'Playfair Display', serif;
+  color: var(--brown);
+  margin: 0;
+}
+
+.nav-menu a {
+  margin: 0 0.8rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+}
+
+.nav-menu a:hover {
+  color: white;
+  background: var(--accent-dark);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+}
+
+.login-button {
+  margin-left: auto;
+}
+
+.button.small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* ========== Hero Section ========== */
+.hero {
+  position: relative;
+  height: 70vh;
+  background: url("/images/home.jpg") center/cover no-repeat;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(92, 64, 51, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 2rem;
+}
+
+.hero-text h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero-text p {
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+/* ========== Categories Section ========== */
+.categories {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--beige);
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.category-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px var(--shadow);
+}
+
+/* ========== About Section ========== */
+.about {
+  padding: 3rem 2rem;
+  background: var(--cream);
+  text-align: center;
+}
+
+.about-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.about-photo {
+  width: 320px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px var(--shadow);
+}
+
+.about-text {
+  max-width: 500px;
+  text-align: left;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.photo-gallery {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.photo-gallery img {
+  width: 200px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+/* ========== Clickable Category Cards ========== */
+.category-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px var(--shadow);
+  text-decoration: none;
+  color: var(--brown);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  display: block;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px var(--shadow);
+  background: #f9f3ed;
 }

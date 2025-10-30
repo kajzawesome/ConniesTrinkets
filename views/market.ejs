@@ -6,28 +6,52 @@
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-  <header>
-    <h1>Grandma’s Legacy Market</h1>
-    <nav>
-      <a href="/account">My Items</a>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo"><h2>Grandma’s Legacy</h2></div>
+    <nav class="nav-menu">
+      <a href="/">Home</a>
+      <a href="/market">All Items</a>
     </nav>
+    <div class="login-button">
+      <a href="/login" class="button small">Login</a>
+    </div>
   </header>
 
-  <main class="market">
-    <% items.forEach(item => { %>
-      <div class="item">
-        <h3><%= item.name %></h3>
-        <p><%= item.desc %></p>
+  <!-- Items -->
+  <section class="market">
+    <h1>
+      <%= category ? category.charAt(0).toUpperCase() + category.slice(1) : "All" %> Items
+    </h1>
+    <p>Choose an item to claim or view details.</p>
 
-        <% if (!item.claimedBy) { %>
-          <form method="POST" action="/claim/<%= item.id %>">
-            <button class="claim-btn">Claim</button>
-          </form>
-        <% } else { %>
-          <span class="claimed">Claimed by <%= item.claimedBy %></span>
-        <% } %>
-      </div>
-    <% }) %>
-  </main>
+    <div class="item-grid">
+      <% if (items && items.length > 0) { %>
+        <% items.forEach(item => { %>
+          <div class="item-card">
+            <img src="<%= item.image || '/images/default.jpg' %>" alt="<%= item.name %>" />
+            <h3><%= item.name %></h3>
+            <p><%= item.description %></p>
+            <p class="claimed-status">
+              <% if (item.claimed) { %>
+                <span class="claimed">Claimed by <%= item.claimedBy %></span>
+              <% } else { %>
+                <a href="/claim/<%= item.id %>" class="button small">Claim Item</a>
+              <% } %>
+            </p>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p class="no-items">No items found in this category.</p>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Made with love by the family • © <%= new Date().getFullYear() %> Grandma’s Legacy</p>
+  </footer>
+
 </body>
 </html>
