@@ -9,18 +9,16 @@
 
   <!-- 🌿 Header -->
   <header class="site-header">
-    <div class="left-header">
-      <div class="logo">
-        <h2>Connie’s Trinkets</h2>
-      </div>
-      <nav class="nav-menu">
-        <a href="/">Home</a>
-        <a href="/market">Items</a>
-        <a href="/account">Account</a>
-      </nav>
-      </div>
-      <div class="login-button">
-        <a href="/login.html" class="button small">Login</a>
+    <div class="logo">
+      <h2>Connie’s Trinkets</h2>
+    </div>
+    <nav class="nav-menu">
+      <a href="/">Home</a>
+      <a href="/market">Items</a>
+      <a href="/account">Account</a>
+    </nav>
+    <div class="login-button">
+      <a href="/login" class="button small">Login</a>
     </div>
   </header>
 
@@ -86,8 +84,8 @@
   </section>
 
   <!-- 🌾 Footer -->
-  <footer class="footer">
-    <p >Made with love by the family • © 2025 Connie’s Legacy</p>
+  <footer>
+    <p>Made with love by the family • © <%= new Date().getFullYear() %> Connie’s Legacy</p>
   </footer>
 
 </body>
