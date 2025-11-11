@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login | Grandma’s Legacy</title>
-  <link rel="stylesheet" href="public/css/style.css" />
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/script.js"></script>
 </head>
 <body>
 
@@ -14,8 +15,8 @@
   <section class="login-section">
     <div class="login-card">
       <h2>Login</h2>
-      <% if (message) { %>
-        <p class="login-message"><%= message %></p>
+      <% if (error) { %>
+        <p class="login-message"><%= error %></p>
       <% } %>
       <form action="/login" method="post">
         <input type="text" name="username" placeholder="Username" required />

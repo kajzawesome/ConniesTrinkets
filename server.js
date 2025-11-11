@@ -8,7 +8,7 @@ const PORT = 3000;
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "sources"))); // serve css/js from sources
+app.use(express.static(path.join(__dirname, "public"))); // serve css/js from sources
 app.set("view engine", "ejs");
 
 app.use(
@@ -30,7 +30,10 @@ let items = [
 
 // Routes
 app.get("/", (req, res) => {
-  res.render("index", { user: req.session.username || null });
+  res.render("index", {
+    user: req.session.username || null,
+    loggedIn: !!req.session.loggedIn,
+  });
 });
 
 app.get("/login", (req, res) => {
