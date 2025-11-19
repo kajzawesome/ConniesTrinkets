@@ -243,7 +243,7 @@ footer {
 }
 
 .logo h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'FontdinerdotcomSparkly-x37m.ttf', sans-serif;
   color: var(--green);
   margin: 0;
 }
@@ -414,11 +414,19 @@ footer {
 
 .left-header {
   display: flex;
-  align-items: center;
-  gap: 2rem; /* spacing between logo and nav */
+  align-items: left;
+  gap: 0rem; /* spacing between logo and nav */
 }
 
 .nav-menu {
   display: flex;
-  align-items: center;
+  align-items: left;
+}
+
+/* fonts!! */
+@font-face {
+  font-family: 'FontdinerdotcomSparkly-x37m';
+  src: url('../fonts/FontdinerdotcomSparkly-x37m.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
