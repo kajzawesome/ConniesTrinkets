@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register - Connie’s Trinkets</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- 🌿 Header -->
+  <header class="site-header">
+    <div class="logo">
+      <h2>Connie’s Trinkets</h2>
+    </div>
+    <nav class="nav-menu">
+      <a href="/">Home</a>
+      <a href="/market">Market</a>
+    </nav>
+    <div class="login-button">
+      <a href="/login" class="button small">Login</a>
+    </div>
+  </header>
+
+  <!-- 📝 Registration Form -->
+  <section class="register">
+    <h2>Create Your Account</h2>
+    <p>Join our family marketplace to claim items and view your account.</p>
+
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+    <form action="/register" method="POST" class="form-card">
+      <label for="name">Full Name</label>
+      <input type="text" name="name" id="name" required>
+
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" required>
+
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" required>
+
+      <button type="submit" class="button">Register</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>Made with love by the family • © <%= new Date().getFullYear() %> Grandma’s Legacy</p>
+  </footer>
+</body>
+</html>

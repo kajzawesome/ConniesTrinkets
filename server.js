@@ -8,7 +8,7 @@ const PORT = 3000;
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public"))); // serve css/js from sources
+app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 
 app.use(
@@ -19,12 +19,16 @@ app.use(
   })
 );
 
-// Simulated database
-let familyPassword = "family2025";
+// Simulated database - remove later and use real DB
+let users = [
+  { username: "manager1", password: "managerpass1", name: "Manager One", role: "M" },
+  { username: "manager2", password: "managerpass2", name: "Manager Two", role: "M" }
+];
+
 let items = [
-  { id: 1, name: "Porcelain Teacup", desc: "From her 50th anniversary trip to England.", claimedBy: null, category: "Kitchen" },
-  { id: 2, name: "Quilt Blanket", desc: "Handmade with love by Grandma.", claimedBy: null, category: "Bedroom" },
-  { id: 3, name: "Photo Album", desc: "Family memories through the years.", claimedBy: null, category: "Memories" },
+  { id: 1, name: "Porcelain Teacup", desc: "From her 50th anniversary trip to England.", claimedBy: null, category: "Keepsakes" },
+  { id: 2, name: "Quilt Blanket", desc: "Handmade with love by Grandma.", claimedBy: null, category: "Keepsakes" },
+  { id: 3, name: "Photo Album", desc: "Family memories through the years.", claimedBy: null, category: "Books & Letters" },
   { id: 4, name: "Silver Necklace", desc: "Gift from Grandpa on their 40th anniversary.", claimedBy: null, category: "Jewelry" },
 ];
 
@@ -36,18 +40,40 @@ app.get("/", (req, res) => {
   });
 });
 
+// Registration
+app.get("/register", (req, res) => {
+  res.render("register", { error: null });
+});
+
+app.post("/register", (req, res) => {
+  const { username, password, name } = req.body;
+  if (!username || !password || !name) {
+    return res.render("register", { error: "All fields are required." });
+  }
+  if (users.find(u => u.username === username)) {
+    return res.render("register", { error: "Username already exists." });
+  }
+
+  users.push({ username, password, name, role: "U" });
+  req.session.loggedIn = true;
+  req.session.username = username;
+  res.redirect("/market");
+});
+
+// Login
 app.get("/login", (req, res) => {
   res.render("login", { error: null });
 });
 
 app.post("/login", (req, res) => {
-  const { password } = req.body;
-  if (password === familyPassword) {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username && u.password === password);
+  if (user) {
     req.session.loggedIn = true;
-    req.session.username = "Family Member";
+    req.session.username = username;
     res.redirect("/market");
   } else {
-    res.render("login", { error: "Incorrect password. Please try again." });
+    res.render("login", { error: "Invalid username or password." });
   }
 });
 
@@ -55,6 +81,7 @@ app.get("/logout", (req, res) => {
   req.session.destroy(() => res.redirect("/"));
 });
 
+// Market
 app.get("/market", (req, res) => {
   if (!req.session.loggedIn) {
     return res.render("login", { error: "Please login to view items." });
@@ -70,6 +97,7 @@ app.get("/market", (req, res) => {
   res.render("market", { user: req.session.username, items: filteredItems, category });
 });
 
+// Claim item
 app.post("/claim/:id", (req, res) => {
   if (!req.session.loggedIn) return res.redirect("/login");
   const item = items.find((i) => i.id === parseInt(req.params.id));
@@ -79,6 +107,17 @@ app.post("/claim/:id", (req, res) => {
   res.redirect("/market");
 });
 
+// Unclaim item from account page
+app.post("/unclaim/:id", (req, res) => {
+  if (!req.session.loggedIn) return res.redirect("/login");
+  const item = items.find((i) => i.id === parseInt(req.params.id));
+  if (item && item.claimedBy === req.session.username) {
+    item.claimedBy = null;
+  }
+  res.redirect("/account");
+});
+
+// Account page
 app.get("/account", (req, res) => {
   if (!req.session.loggedIn) {
     return res.render("login", { error: "Please login to access your account." });
