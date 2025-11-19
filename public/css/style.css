@@ -2,7 +2,7 @@
    Grandma’s Legacy — Global Styles
    =============================== */
 
-/* 🌿 Typography & Base Colors */
+/* 🌿 Fonts & Root Colors */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Open+Sans:wght@400;600&display=swap');
 
 :root {
@@ -17,9 +17,10 @@
   --teal: #C3EDD9;
   --pixie: #E65E99;
   --lavender: #EBB8E0;
+  --brown: #6b4f3f;
 }
 
-/* 🌼 Base Reset */
+/* 🌼 Reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -55,13 +56,18 @@ a, .button, button {
   font-weight: 600;
 }
 
+.button.small {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+}
+
 a:hover, .button:hover, button:hover {
   background: black;
-  color: var(--green)
+  color: var(--green);
 }
 
 /* 💬 Error Messages */
-.error {
+.error, .login-message {
   color: #b33a3a;
   background: #fbeaea;
   border: 1px solid #f0c6c6;
@@ -71,7 +77,7 @@ a:hover, .button:hover, button:hover {
 }
 
 /* 🌺 Header & Navigation */
-header {
+header, .site-header {
   background: var(--off-white);
   border-bottom: 2px solid black;
   padding: 1rem 2rem;
@@ -81,177 +87,24 @@ header {
   flex-wrap: wrap;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-nav a {
-  background: transparent;
-  color: black;
-  font-weight: 600;
-  margin-left: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: 0.3s ease;
-}
-
-nav a:hover {
-  background: var(black);
-  color: white;
-}
-
-/* 🌷 Home Page */
-.home-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(to bottom right, var(--off-white), var(--green));
-  text-align: center;
-  padding: 2rem;
-}
-
-.home-title {
-  font-size: 3rem;
-  color: var(--off-white);
-}
-
-.home-subtitle {
-  font-size: 1.2rem;
-  max-width: 600px;
-  color: var(--muted);
-  margin: 1.5rem 0;
-  line-height: 1.6;
-}
-
-.memory-quote {
-  font-style: italic;
-  color: var(--muted);
-  margin: 1rem 0 2rem;
-}
-
-/* 🪞 Login Page */
-.login {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  text-align: center;
-}
-
-.login form {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px var(--shadow);
-  width: 300px;
-}
-
-.login input {
-  width: 100%;
-  padding: 0.7rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-/* 🏷️ Market (Listings) */
-.market {
-  padding: 2rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-.item {
-  background: white;
-  border-radius: 12px;
-  padding: 1.2rem;
-  box-shadow: 0 2px 6px var(--shadow);
-  text-align: center;
-}
-
-.item h3 {
-  margin-bottom: 0.6rem;
-}
-
-.item p {
-  color: var(--muted);
-  margin-bottom: 1rem;
-}
-
-.claimed {
-  color: #777;
-  font-style: italic;
-}
-
-/* 👤 Account Page */
-.account {
-  padding: 2rem;
-}
-
-.account ul {
-  list-style: none;
-  padding: 0;
-}
-
-.account li {
-  background: white;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 5px var(--shadow);
-}
-
-/* 🌸 Footer */
-footer {
-  text-align: center;
-  padding: 1.5rem 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-/* 📱 Responsive Adjustments */
-@media (max-width: 700px) {
-  header {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .home-title {
-    font-size: 2.3rem;
-  }
-
-  .market {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ========== Header Navigation ========== */
-.site-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.2rem 2.5rem;
-  background: white;
-  border-bottom: 2px solid black;
-  flex-wrap: wrap;
-}
-
 .logo h2 {
   font-family: 'Playfair Display', serif;
   color: var(--green);
   margin: 0;
 }
 
+.nav-menu {
+  display: flex;
+  align-items: center;
+}
+
 .nav-menu a {
   margin: 0 0.8rem;
   font-weight: 600;
   color: var(--pink);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: 0.3s ease;
 }
 
 .nav-menu a:hover {
@@ -259,11 +112,9 @@ footer {
   background-color: white;
 }
 
-
-/* Make login link match the nav links */
 .login-button .button {
   background: transparent;
-  color: pink;
+  color: var(--pink);
   font-weight: 600;
   margin-left: 1rem;
   padding: 0.5rem 1rem;
@@ -277,11 +128,6 @@ footer {
   color: black;
 }
 
-.button.small {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
-
 /* ========== Hero Section ========== */
 .hero {
   position: relative;
@@ -291,21 +137,17 @@ footer {
 
 .hero-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--off-white);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(242,240,239,0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: var(--text);;
   padding: 2rem;
+  color: var(--text);
 }
 
 .hero-text h1 {
-  font-family: 'Playfair Display', serif;
   font-size: 2.5rem;
   margin-bottom: 1rem;
 }
@@ -321,7 +163,6 @@ footer {
 .categories {
   padding: 3rem 2rem;
   text-align: center;
-  background: var(--off-white);
 }
 
 .category-grid {
@@ -336,12 +177,15 @@ footer {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px var(--shadow);
-  transition: 0.3s ease;
+  text-decoration: none;
+  color: var(--brown);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  display: block;
 }
 
 .category-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 10px var(--shadow);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px var(--shadow);
   background: var(--green);
   color: white;
 }
@@ -349,7 +193,6 @@ footer {
 /* ========== About Section ========== */
 .about {
   padding: 3rem 2rem;
-  background: var(--off-white);
   text-align: center;
 }
 
@@ -371,7 +214,6 @@ footer {
 .about-text {
   max-width: 500px;
   text-align: left;
-  color: black;
   line-height: 1.7;
 }
 
@@ -389,36 +231,149 @@ footer {
   box-shadow: 0 2px 6px var(--shadow);
 }
 
-/* ========== Clickable Category Cards ========== */
-.category-card {
+/* ========== Login & Register Forms ========== */
+.login-section, .register {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+}
+
+.login-card, .form-card {
   background: white;
+  padding: 2rem;
   border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px var(--shadow);
-  text-decoration: none;
-  color: var(--brown);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-  display: block;
+  box-shadow: 0 3px 10px var(--shadow);
+  width: 300px;
 }
 
-.category-card:hover {
+.login-card input, .form-card input {
+  width: 100%;
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* ========== Market / Item Listings ========== */
+.market {
+  padding: 2rem;
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.item-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.item-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 12px var(--shadow);
-  background: var(--green);
-  color: white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 
-.footer {
-  color: black;
+.item-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
 }
 
-.left-header {
+/* Claimed items */
+.claimed-item {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.claimed-item:hover {
+  transform: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.claimed-item .claimed {
+  display: inline-block;
+  background-color: #ff6b6b;
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.claimed-status {
+  margin-top: 0.5rem;
+}
+
+/* ========== Account Page ========== */
+.account-section, .account {
+  padding: 2rem;
+}
+
+.account ul {
+  list-style: none;
+  padding: 0;
+}
+
+.account li {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 5px var(--shadow);
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 2rem; /* spacing between logo and nav */
 }
 
-.nav-menu {
-  display: flex;
-  align-items: center;
+/* 🏡 Footer */
+footer {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* 📱 Responsive Adjustments */
+@media (max-width: 700px) {
+  header, .site-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .market {
+    grid-template-columns: 1fr;
+  }
+
+  .home-title {
+    font-size: 2.3rem;
+  }
+
+  .about-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Active category highlight */
+.category-card.active-category {
+  border: 3px solid var(--accent-dark);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.category-card.active-category:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 7px 20px rgba(0,0,0,0.25);
 }

@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>Market | Grandma’s Legacy</title>
   <link rel="stylesheet" href="/css/style.css">
-  <script src="/js/script.js"></script>
 </head>
 <body>
 
@@ -14,31 +13,36 @@
     <nav class="nav-menu">
       <a href="/">Home</a>
       <a href="/market">All Items</a>
+      <a href="/account">My Account</a>
     </nav>
     <div class="login-button">
-      <a href="/login" class="button small">Login</a>
+      <% if (loggedIn) { %>
+        <a href="/logout" class="button small">Logout</a>
+      <% } else { %>
+        <a href="/login" class="button small">Login</a>
+      <% } %>
     </div>
   </header>
 
   <!-- Items -->
   <section class="market">
-    <h1>
-      <%= category ? category.charAt(0).toUpperCase() + category.slice(1) : "All" %> Items
-    </h1>
+    <h1><%= category || "All" %> Items</h1>
     <p>Choose an item to claim or view details.</p>
 
     <div class="item-grid">
       <% if (items && items.length > 0) { %>
         <% items.forEach(item => { %>
-          <div class="item-card">
+          <div class="item-card <%= item.claimedBy ? 'claimed-item' : '' %>">
             <img src="<%= item.image || '/images/default.jpg' %>" alt="<%= item.name %>" />
             <h3><%= item.name %></h3>
-            <p><%= item.description %></p>
+            <p><%= item.desc %></p>
             <p class="claimed-status">
-              <% if (item.claimed) { %>
+              <% if (item.claimedBy) { %>
                 <span class="claimed">Claimed by <%= item.claimedBy %></span>
               <% } else { %>
-                <a href="/claim/<%= item.id %>" class="button small">Claim Item</a>
+                <form action="/claim/<%= item.id %>" method="POST">
+                  <button type="submit" class="button small">Claim Item</button>
+                </form>
               <% } %>
             </p>
           </div>
@@ -49,7 +53,6 @@
     </div>
   </section>
 
-  <!-- Footer -->
   <footer>
     <p>Made with love by the family • © <%= new Date().getFullYear() %> Grandma’s Legacy</p>
   </footer>

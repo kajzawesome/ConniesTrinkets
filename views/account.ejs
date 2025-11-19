@@ -7,24 +7,43 @@
   <script src="/js/script.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Welcome, <%= user %></h1>
-    <nav>
-      <a href="/market">Back to Market</a>
+
+  <!-- 🌿 Header -->
+  <header class="site-header">
+    <div class="logo"><h2>Grandma’s Legacy</h2></div>
+    <nav class="nav-menu">
+      <a href="/">Home</a>
+      <a href="/market">Market</a>
     </nav>
+    <div class="login-button">
+      <a href="/logout" class="button small">Logout</a>
+    </div>
   </header>
 
-  <main class="account">
+  <!-- 🏡 Account Section -->
+  <main class="account-section">
+    <h1>Welcome, <%= user %></h1>
     <h2>Your Claimed Items</h2>
+
     <% if (items.length > 0) { %>
-      <ul>
+      <ul class="claimed-items">
         <% items.forEach(i => { %>
-          <li><strong><%= i.name %></strong> — <%= i.desc %></li>
+          <li class="claimed-item">
+            <strong><%= i.name %></strong> — <%= i.desc %>
+            <form action="/unclaim/<%= i.id %>" method="POST" class="unclaim-form">
+              <button type="submit" class="button small red">Unclaim</button>
+            </form>
+          </li>
         <% }) %>
       </ul>
     <% } else { %>
-      <p>You haven’t claimed any items yet.</p>
+      <p>You haven’t claimed any items yet. Visit the <a href="/market">Market</a> to claim some!</p>
     <% } %>
   </main>
+
+  <footer>
+    <p>Made with love by the family • © <%= new Date().getFullYear() %> Grandma’s Legacy</p>
+  </footer>
+
 </body>
 </html>

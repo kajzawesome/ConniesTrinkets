@@ -19,16 +19,16 @@ app.use(
   })
 );
 
-// Simulated database
+// Simulated database - remove later and use real DB
 let users = [
   { username: "manager1", password: "managerpass1", name: "Manager One", role: "M" },
   { username: "manager2", password: "managerpass2", name: "Manager Two", role: "M" }
 ];
 
 let items = [
-  { id: 1, name: "Porcelain Teacup", desc: "From her 50th anniversary trip to England.", claimedBy: null, category: "Kitchen" },
-  { id: 2, name: "Quilt Blanket", desc: "Handmade with love by Grandma.", claimedBy: null, category: "Bedroom" },
-  { id: 3, name: "Photo Album", desc: "Family memories through the years.", claimedBy: null, category: "Memories" },
+  { id: 1, name: "Porcelain Teacup", desc: "From her 50th anniversary trip to England.", claimedBy: null, category: "Keepsakes" },
+  { id: 2, name: "Quilt Blanket", desc: "Handmade with love by Grandma.", claimedBy: null, category: "Keepsakes" },
+  { id: 3, name: "Photo Album", desc: "Family memories through the years.", claimedBy: null, category: "Books & Letters" },
   { id: 4, name: "Silver Necklace", desc: "Gift from Grandpa on their 40th anniversary.", claimedBy: null, category: "Jewelry" },
 ];
 
