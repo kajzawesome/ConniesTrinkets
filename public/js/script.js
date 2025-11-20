@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const action = form.getAttribute("action");
 
       try {
-        const res = await fetch(action, { method: "POST" });
+        const res = await fetch(action, { method: "POST", credentials: 'same-origin' });
         if (res.ok) {
           const card = form.closest(".item-card");
           card.classList.add("claimed-item");
@@ -54,4 +54,34 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+});
+
+// Auto-submit filters on typing (debounced) and on checkbox change
+document.addEventListener("DOMContentLoaded", () => {
+  const filterForm = document.querySelector('.market-filters');
+  if (!filterForm) return;
+
+  const qInput = filterForm.querySelector('input[name="q"]');
+  const checkboxes = filterForm.querySelectorAll('input[type="checkbox"][name="categories"]');
+
+  // debounce helper
+  function debounce(fn, wait) {
+    let t;
+    return function (...args) {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), wait);
+    };
+  }
+
+  const submitForm = () => filterForm.submit();
+
+  if (qInput) {
+    qInput.addEventListener('input', debounce(() => {
+      submitForm();
+    }, 350));
+  }
+
+  if (checkboxes && checkboxes.length) {
+    checkboxes.forEach(cb => cb.addEventListener('change', () => submitForm()));
+  }
 });

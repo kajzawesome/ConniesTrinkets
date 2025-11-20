@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,11 +26,13 @@ let users = [
 ];
 
 let items = [
-  { id: 1, name: "Porcelain Teacup", desc: "From her 50th anniversary trip to England.", claimedBy: null, category: "Keepsakes" },
-  { id: 2, name: "Quilt Blanket", desc: "Handmade with love by Grandma.", claimedBy: null, category: "Keepsakes" },
-  { id: 3, name: "Photo Album", desc: "Family memories through the years.", claimedBy: null, category: "Books & Letters" },
-  { id: 4, name: "Silver Necklace", desc: "Gift from Grandpa on their 40th anniversary.", claimedBy: null, category: "Jewelry" },
+  { id: 1, name: "Porcelain Teacup", desc: "From her 50th anniversary trip to England.", claimedBy: null, category: "keepsakes" },
+  { id: 2, name: "Quilt Blanket", desc: "Handmade with love by Grandma.", claimedBy: null, category: "keepsakes" },
+  { id: 3, name: "Photo Album", desc: "Family memories through the years.", claimedBy: null, category:"books" },
+  { id: 4, name: "Silver Necklace", desc: "Gift from Grandpa on their 40th anniversary.", claimedBy: null, category: "jewelry" },
 ];
+
+let categories = ["keepsakes", "jewelry", "books", "clothing", "misc"];
 
 // Routes
 app.get("/", (req, res) => {
@@ -57,6 +59,7 @@ app.post("/register", (req, res) => {
   users.push({ username, password, name, role: "U" });
   req.session.loggedIn = true;
   req.session.username = username;
+  req.session.role = "U";
   res.redirect("/market");
 });
 
@@ -71,6 +74,7 @@ app.post("/login", (req, res) => {
   if (user) {
     req.session.loggedIn = true;
     req.session.username = username;
+    req.session.role = user.role;
     res.redirect("/market");
   } else {
     res.render("login", { error: "Invalid username or password." });
@@ -87,14 +91,42 @@ app.get("/market", (req, res) => {
     return res.render("login", { error: "Please login to view items." });
   }
 
-  const category = req.query.category;
-  let filteredItems = items;
+  // Query params
+  const q = req.query.q ? String(req.query.q).trim().toLowerCase() : null;
+  const rawCategories = req.query.categories; // may be string or array
 
-  if (category) {
-    filteredItems = items.filter((item) => item.category === category);
+  // Build selectedCategories array
+  let selectedCategories = [];
+  if (rawCategories) {
+    selectedCategories = Array.isArray(rawCategories) ? rawCategories : [rawCategories];
   }
 
-  res.render("market", { user: req.session.username, items: filteredItems, category });
+  // All available categories for the checkbox list
+  const categories = Array.from(new Set(items.map((i) => i.category)));
+
+  // Filtering
+  let filteredItems = items;
+
+  if (q) {
+    filteredItems = filteredItems.filter((item) => {
+      const name = (item.name || "").toLowerCase();
+      const desc = (item.desc || "").toLowerCase();
+      return name.includes(q) || desc.includes(q);
+    });
+  }
+
+  if (selectedCategories.length > 0) {
+    filteredItems = filteredItems.filter((item) => selectedCategories.includes(item.category));
+  }
+
+  res.render("market", {
+    user: req.session.username,
+    loggedIn: !!req.session.loggedIn,
+    items: filteredItems,
+    categories,
+    selectedCategories,
+    q,
+  });
 });
 
 // Claim item
@@ -123,7 +155,30 @@ app.get("/account", (req, res) => {
     return res.render("login", { error: "Please login to access your account." });
   }
   const userItems = items.filter((i) => i.claimedBy === req.session.username);
-  res.render("account", { user: req.session.username, items: userItems });
+  // Pass role and users list so managers can manage accounts
+  const safeUsers = users.map(u => ({ username: u.username, name: u.name, role: u.role }));
+  res.render("account", { user: req.session.username, loggedIn: !!req.session.loggedIn, items: userItems, role: req.session.role, users: safeUsers });
+});
+
+// Update user info (managers only)
+app.post("/user/update", (req, res) => {
+  if (!req.session.loggedIn || req.session.role !== "M") return res.status(403).send("Forbidden");
+
+  const { username, name, password, role } = req.body;
+  const target = users.find(u => u.username === username);
+  if (!target) return res.redirect("/account");
+
+  if (name) target.name = name;
+  if (password) target.password = password;
+  if (role) target.role = role;
+
+  // If manager edited their own role/name, update session
+  if (req.session.username === username) {
+    req.session.role = target.role;
+    req.session.username = target.username;
+  }
+
+  res.redirect("/account");
 });
 
 app.listen(PORT, () =>

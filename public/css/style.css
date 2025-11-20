@@ -391,7 +391,67 @@ header, .site-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
->>>>>>> 94e7f1c387e36a046671c4f08f30a7097cdd598d
+}
+
+/* ========== Market Filters (search + categories) ========== */
+.market-filters {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.market-filters .search-box {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.market-filters .search-box input[type="text"] {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  min-width: 220px;
+}
+
+.market-filters .search-box .button,
+.market-filters .search-box a.button {
+  padding: 0.45rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.category-filters {
+  border: 1px solid #eee;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.category-filters legend {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+@media (max-width: 700px) {
+  .market-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .market-filters .search-box {
+    width: 100%;
+  }
+  .category-filters {
+    width: 100%;
+  }
 }
 
 /* 🏡 Footer */

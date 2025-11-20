@@ -26,8 +26,28 @@
 
   <!-- Items -->
   <section class="market">
-    <h1><%= category || "All" %> Items</h1>
+    <h1>Items</h1>
     <p>Choose an item to claim or view details.</p>
+
+    <form class="market-filters" method="GET" action="/market">
+      <div class="search-box">
+        <label for="q">Search:</label>
+        <input type="text" id="q" name="q" placeholder="Search name or description" value="<%= q || '' %>" />
+        <button type="submit" class="button small">Search</button>
+        <a href="/market" class="button small">Clear</a>
+      </div>
+
+      <fieldset class="category-filters">
+        <legend>Categories</legend>
+        <% if (categories && categories.length > 0) { %>
+          <% categories.forEach(cat => { %>
+            <label class="checkbox-inline">
+              <input type="checkbox" name="categories" value="<%= cat %>" <%= (selectedCategories || []).includes(cat) ? 'checked' : '' %> /> <%= cat %>
+            </label>
+          <% }) %>
+        <% } %>
+      </fieldset>
+    </form>
 
     <div class="item-grid">
       <% if (items && items.length > 0) { %>

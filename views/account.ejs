@@ -39,6 +39,36 @@
     <% } else { %>
       <p>You haven’t claimed any items yet. Visit the <a href="/market">Market</a> to claim some!</p>
     <% } %>
+  
+    <% if (role === 'M') { %>
+      <section class="manager-section">
+        <h2>Manager — Edit User</h2>
+        <form action="/user/update" method="POST" class="manager-form">
+          <label for="username">Select user:</label>
+          <select id="username" name="username">
+            <% users.forEach(u => { %>
+              <option value="<%= u.username %>"><%= u.username %> — <%= u.name %> (<%= u.role %>)</option>
+            <% }) %>
+          </select>
+
+          <label for="name">Name:</label>
+          <input id="name" name="name" type="text" placeholder="New display name" />
+
+          <label for="password">Password:</label>
+          <input id="password" name="password" type="password" placeholder="New password (leave blank to keep)" />
+
+          <label for="role">Role:</label>
+          <select id="role" name="role">
+            <option value="U">User (U)</option>
+            <option value="M">Manager (M)</option>
+          </select>
+
+          <div style="margin-top:.5rem">
+            <button type="submit" class="button small">Update User</button>
+          </div>
+        </form>
+      </section>
+    <% } %>
   </main>
 
   <footer>
