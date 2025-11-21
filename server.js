@@ -19,18 +19,34 @@ app.use(
   })
 );
 
-// Simulated database - remove later and use real DB
-let users = [
-  { username: "manager1", password: "managerpass1", name: "Manager One", role: "M" },
-  { username: "manager2", password: "managerpass2", name: "Manager Two", role: "M" }
-];
+const knex = require("knex")({
+    client: "pg",
+    connection: {
+        host : process.env.RDS_HOST || "localhost",
+        user : process.env.RDS_USER || "postgres",
+        password : process.env.RDS_PASSWORD || "12345",
+        database : process.env.RDS_NAME || "ConniesTrinkets",
+        port : process.env.RDS_PORT || 5432
+    }
+});
 
-let items = [
-  { id: 1, name: "Porcelain Teacup", desc: "From her 50th anniversary trip to England.", claimedBy: null, category: "keepsakes" },
-  { id: 2, name: "Quilt Blanket", desc: "Handmade with love by Grandma.", claimedBy: null, category: "keepsakes" },
-  { id: 3, name: "Photo Album", desc: "Family memories through the years.", claimedBy: null, category:"books" },
-  { id: 4, name: "Silver Necklace", desc: "Gift from Grandpa on their 40th anniversary.", claimedBy: null, category: "jewelry" },
-];
+// Global authentication middleware - runs on EVERY request
+app.use((req, res, next) => {
+    // Skip authentication for login routes
+    if (req.path === '/' || req.path === '/login' || req.path === '/logout') {
+        //continue with the request path
+        return next();
+    }
+    
+    // Check if user is logged in for all other routes
+    if (req.session.LoggedIn) {
+        //notice no return because nothing below it
+        next(); // User is logged in, continue
+    } 
+    else {
+        res.render("login", { error_message: "Please log in to access this page" });
+    }
+});
 
 let categories = ["keepsakes", "jewelry", "books", "clothing", "misc"];
 
