@@ -4,24 +4,27 @@ CREATE TABLE IF NOT EXISTS users (
     password character varying(30) NOT NULL,
     "userFirstName" character varying(30) NOT NULL,
     "userLastName" character varying(30) NOT NULL,
+    "role" character varying(1) NOT NULL,
     PRIMARY KEY ("userID")
 );
 
 INSERT INTO users (
-username, password, "userFirstName", "userLastName")
+username, password, "userFirstName", "userLastName", "role")
 VALUES (
     'manager1'::character varying,
     'managerpass1'::character varying,
     'Manager'::character varying,
-    'One'::character varying);
+    'One'::character varying,
+    'M'::character varying);
 
 INSERT INTO users (
-username, password, "userFirstName", "userLastName")
+username, password, "userFirstName", "userLastName", "role")
 VALUES (
     'manager2'::character varying,
     'managerpass2'::character varying,
     'Manager'::character varying,
-    'Two'::character varying);
+    'Two'::character varying,
+    'M'::character varying);
 
 CREATE TABLE IF NOT EXISTS items (
     "itemID" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 ),

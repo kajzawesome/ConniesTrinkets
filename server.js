@@ -39,7 +39,7 @@ app.use((req, res, next) => {
     }
     
     // Check if user is logged in for all other routes
-    if (req.session.LoggedIn) {
+    if (req.session.loggedIn) {
         //notice no return because nothing below it
         next(); // User is logged in, continue
     } 
@@ -48,7 +48,7 @@ app.use((req, res, next) => {
     }
 });
 
-let categories = ["keepsakes", "jewelry", "books", "clothing", "misc"];
+//let categories = ["keepsakes", "jewelry", "books", "clothing", "misc"];
 
 // Routes
 app.get("/", (req, res) => {
@@ -85,16 +85,30 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(u => u.username === username && u.password === password);
-  if (user) {
-    req.session.loggedIn = true;
-    req.session.username = username;
-    req.session.role = user.role;
-    res.redirect("/market");
-  } else {
-    res.render("login", { error: "Invalid username or password." });
-  }
+    let sName = req.body.username;
+    let sPassword = req.body.password;
+    
+    knex.select("username", "password")
+        .from('users')
+        .where("username", sName)
+        .andWhere("password", sPassword)
+        .then(users => {
+            // Check if a user was found with matching username AND password
+            if (users.length > 0) {
+                const user = users[0];
+                req.session.loggedIn = true;
+                req.session.username = user.username;
+                req.session.role = user.role;
+                res.redirect("/market");
+            } else {
+                // No matching user found
+                res.render("login", { error: "Invalid login" });
+            }
+        })
+        .catch(err => {
+            console.error("Login error:", err);
+            res.render("login", { error: "Invalid login" });
+        });
 });
 
 app.get("/logout", (req, res) => {
@@ -102,22 +116,29 @@ app.get("/logout", (req, res) => {
 });
 
 // Market
-app.get("/market", (req, res) => {
+app.get("/market", async (req, res) => {
   if (!req.session.loggedIn) {
     return res.render("login", { error: "Please login to view items." });
   }
 
-  // Query params
+  // Grabs the text in the search bar and puts it in a variable
   const q = req.query.q ? String(req.query.q).trim().toLowerCase() : null;
+
+  //Takes all the categories in the query and puts them in an array or string if there is only one
   const rawCategories = req.query.categories; // may be string or array
 
   // Build selectedCategories array
   let selectedCategories = [];
+
+  //Checks to see if rawCategories is an array and converts it to an array if it isn't
   if (rawCategories) {
     selectedCategories = Array.isArray(rawCategories) ? rawCategories : [rawCategories];
   }
 
-  // All available categories for the checkbox list
+  //Grabs all the data in the "items" table of the database
+  let items = await knex("items").select("*");
+
+  // Grabs all unique categories from our item data (for the checkboxes)
   const categories = Array.from(new Set(items.map((i) => i.category)));
 
   // Filtering
@@ -125,12 +146,13 @@ app.get("/market", (req, res) => {
 
   if (q) {
     filteredItems = filteredItems.filter((item) => {
-      const name = (item.name || "").toLowerCase();
-      const desc = (item.desc || "").toLowerCase();
+      const name = (item.itemName || "").toLowerCase();
+      const desc = (item.itemDesc || "").toLowerCase();
       return name.includes(q) || desc.includes(q);
     });
   }
 
+  //Checks to see if remaining items are in the selected categories from the search
   if (selectedCategories.length > 0) {
     filteredItems = filteredItems.filter((item) => selectedCategories.includes(item.category));
   }

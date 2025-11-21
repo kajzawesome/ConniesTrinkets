@@ -52,15 +52,15 @@
     <div class="item-grid">
       <% if (items && items.length > 0) { %>
         <% items.forEach(item => { %>
-          <div class="item-card <%= item.claimedBy ? 'claimed-item' : '' %>">
-            <img src="<%= item.image || '/images/default.jpg' %>" alt="<%= item.name %>" />
-            <h3><%= item.name %></h3>
-            <p><%= item.desc %></p>
+          <div class="item-card <%= item.userID ? 'claimed-item' : '' %>">
+            <img src="<%= item.image || '/images/default.jpg' %>" alt="<%= item.itemName %>" />
+            <h3><%= item.itemName %></h3>
+            <p><%= item.itemDesc %></p>
             <p class="claimed-status">
-              <% if (item.claimedBy) { %>
-                <span class="claimed">Claimed by <%= item.claimedBy %></span>
+              <% if (item.userID) { %>
+                <span class="claimed">Claimed by <%= item.userID %></span>
               <% } else { %>
-                <form action="/claim/<%= item.id %>" method="POST">
+                <form action="/claim/<%= item.itemID %>" method="POST">
                   <button type="submit" class="button small">Claim Item</button>
                 </form>
               <% } %>
