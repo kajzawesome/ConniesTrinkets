@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Register - Connie’s Trinkets</title>
   <link rel="stylesheet" href="/css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
   <!-- 🌿 Header -->
@@ -26,8 +27,9 @@
     <p>Join our family marketplace to claim items and view your account.</p>
 
     <% if (error) { %>
-      <p class="error"><%= error %></p>
+      <div class="error-box"><%= error %></div>
     <% } %>
+
 
     <form action="/register" method="POST" class="form-card">
       <label for="name">Full Name</label>

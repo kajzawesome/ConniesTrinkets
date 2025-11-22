@@ -35,20 +35,17 @@ const knex = require("knex")({
 
 // Global authentication middleware - runs on EVERY request
 app.use((req, res, next) => {
-    // Skip authentication for login routes
-    if (req.path === '/' || req.path === '/login' || req.path === '/logout') {
-        //continue with the request path
-        return next();
-    }
-    
-    // Check if user is logged in for all other routes
-    if (req.session.loggedIn) {
-        //notice no return because nothing below it
-        next(); // User is logged in, continue
-    } 
-    else {
-        res.render("login", { error_message: "Please log in to access this page" });
-    }
+  const openPaths = ['/', '/login', '/register', '/logout'];
+
+  if (openPaths.includes(req.path)) {
+    return next();
+  }
+
+  if (req.session.loggedIn) {
+    return next();
+  }
+
+  res.render("login", { error: "Please log in to access this page" });
 });
 
 //let categories = ["keepsakes", "jewelry", "books", "clothing", "misc"];
@@ -66,21 +63,42 @@ app.get("/register", (req, res) => {
   res.render("register", { error: null });
 });
 
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
   const { username, password, name } = req.body;
+
   if (!username || !password || !name) {
     return res.render("register", { error: "All fields are required." });
   }
-  if (users.find(u => u.username === username)) {
-    return res.render("register", { error: "Username already exists." });
-  }
 
-  users.push({ username, password, name, role: "U" });
-  req.session.loggedIn = true;
-  req.session.username = username;
-  req.session.role = "U";
-  res.redirect("/market");
+  try {
+    // Check if exists
+    const existing = await knex("users")
+      .where({ username })
+      .first();
+
+    if (existing) {
+      return res.render("register", { error: "Username already exists." });
+    }
+
+    // Insert user
+    await knex("users").insert({
+      username,
+      password,
+      name,
+      role: "U"
+    });
+
+    req.session.loggedIn = true;
+    req.session.username = username;
+    req.session.role = "U";
+
+    res.redirect("/market");
+  } catch (err) {
+    console.error("Registration error:", err);
+    res.render("register", { error: "Registration failed." });
+  }
 });
+
 
 // Login
 app.get("/login", (req, res) => {
@@ -91,7 +109,7 @@ app.post("/login", (req, res) => {
     let sName = req.body.username;
     let sPassword = req.body.password;
     
-    knex.select("username", "password")
+    knex.select("username", "password", "role")
         .from('users')
         .where("username", sName)
         .andWhere("password", sPassword)
