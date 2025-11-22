@@ -19,6 +19,9 @@ app.use(
   })
 );
 
+const knexConfig = require("./knexfile");
+const environment = process.env.NODE_ENV || "development";
+
 const knex = require("knex")({
     client: "pg",
     connection: {
