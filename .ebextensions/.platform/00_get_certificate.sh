@@ -1,0 +1,1 @@
+sudo certbot -n -d conniestrinkets.us-east-1.elasticbeanstalk.com --nginx --agree-tos --email reganmelsberry@gmail.com
