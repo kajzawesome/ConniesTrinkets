@@ -1,0 +1,28 @@
+<%- include('partials/header', { title: title || "Connie’s Trinkets", loggedIn: loggedIn || false }) %>
+
+<!-- 🌸 About Section -->
+  <main class="about">
+    <h1>About Grandma Connie</h1>
+
+    <div class="about-grid">
+      <img src="/images/pexels-alasdair-braxton-621739-6460374.jpg" alt="Grandma's home" class="about-photo" />
+      <div class="about-text">
+        <p>
+          Grandma Connie built a home filled with laughter, kindness, and the smell of warm bread from the oven.
+          She taught us that love isn’t shown in grand gestures, but in the little things we do every day.
+        </p>
+        <p>
+          This site is a way for us to carry her spirit forward — by sharing the things she treasured most
+          and the memories that came with them.
+        </p>
+      </div>
+    </div>
+
+    <div class="photo-gallery">
+      <img src="/images/pexels-leish-6975186.jpg" alt="Grandma smiling" />
+      <img src="/images/pexels-julia-m-cameron-8841300.jpg" alt="Grandma with family" />
+      <img src="/images/pexels-ozan-aldemir-2157508360-34792605.jpg" alt="Grandma gardening" />
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>

@@ -2,6 +2,16 @@ const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const path = require("path");
+const knex = require("knex")({
+  client: "pg",
+  connection: {
+    host: process.env.RDS_HOST || "localhost",
+    user: process.env.RDS_USER || "postgres",
+    password: process.env.RDS_PASSWORD || "admin",
+    database: process.env.RDS_NAME || "ConniesTrinkets",
+    port: process.env.RDS_PORT || 5432,
+  },
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,25 +29,12 @@ app.use(
   })
 );
 
-// Knex / PostgreSQL
-const knex = require("knex")({
-  client: "pg",
-  connection: {
-    host: process.env.RDS_HOST || "localhost",
-    user: process.env.RDS_USER || "postgres",
-    password: process.env.RDS_PASSWORD || "12345",
-    database: process.env.RDS_NAME || "ConniesTrinkets",
-    port: process.env.RDS_PORT || 5432,
-  },
-});
+// Helper to check login
+const isLoggedIn = (req) => !!req.session.loggedIn;
 
-// ✅ Safe helper
-const isLoggedIn = (req) => !!(req.session && req.session.loggedIn);
-
-// ✅ Global auth middleware
+// Global auth middleware for protected routes
 app.use((req, res, next) => {
   const openPaths = ["/", "/login", "/register", "/logout"];
-
   if (
     openPaths.includes(req.path) ||
     req.path.startsWith("/css") ||
@@ -46,48 +43,51 @@ app.use((req, res, next) => {
   ) {
     return next();
   }
-
   if (isLoggedIn(req)) return next();
-
   res.render("login", { error: "Please log in to access this page" });
 });
+
+// ----------------- Routes -----------------
 
 // Home
 app.get("/", (req, res) => {
   res.render("index", {
+    title: "Home",
     user: req.session.username || null,
     loggedIn: isLoggedIn(req),
   });
 });
 
-// Registration
+// Register
 app.get("/register", (req, res) => {
   res.render("register", { error: null });
 });
 
 app.post("/register", async (req, res) => {
-  const { username, password, name } = req.body;
+  const { username, password, userFirstName, userLastName } = req.body;
 
-  if (!username || !password || !name) {
+  if (!username || !password || !userFirstName || !userLastName) {
     return res.render("register", { error: "All fields are required." });
   }
 
   try {
     const existing = await knex("users").where({ username }).first();
-    if (existing) {
-      return res.render("register", { error: "Username already exists." });
-    }
+    if (existing) return res.render("register", { error: "Username exists." });
 
-    await knex("users").insert({
-      username,
-      password,
-      name,
-      role: "U",
-    });
+    const [newUser] = await knex("users")
+      .insert({
+        username,
+        password,
+        userFirstName,
+        userLastName,
+        role: "U",
+      })
+      .returning("*");
 
     req.session.loggedIn = true;
-    req.session.username = username;
-    req.session.role = "U";
+    req.session.username = newUser.username;
+    req.session.role = newUser.role;
+    req.session.userID = newUser.userID;
 
     res.redirect("/market");
   } catch (err) {
@@ -97,9 +97,7 @@ app.post("/register", async (req, res) => {
 });
 
 // Login
-app.get("/login", (req, res) => {
-  res.render("login", { error: null });
-});
+app.get("/login", (req, res) => res.render("login", { error: null }));
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -109,13 +107,12 @@ app.post("/login", async (req, res) => {
       .where({ username, password })
       .first();
 
-    if (!user) {
-      return res.render("login", { error: "Invalid login" });
-    }
+    if (!user) return res.render("login", { error: "Invalid login" });
 
     req.session.loggedIn = true;
     req.session.username = user.username;
     req.session.role = user.role;
+    req.session.userID = user.userID;
 
     res.redirect("/market");
   } catch (err) {
@@ -133,42 +130,44 @@ app.get("/logout", (req, res) => {
 app.get("/market", async (req, res) => {
   const q = req.query.q ? String(req.query.q).trim().toLowerCase() : null;
   const rawCategories = req.query.categories;
-  let selectedCategories = [];
+  const showUnclaimed = req.query.showUnclaimed === '1'; // toggle
 
+  let selectedCategories = [];
   if (rawCategories) {
-    selectedCategories = Array.isArray(rawCategories)
-      ? rawCategories
-      : [rawCategories];
+    selectedCategories = Array.isArray(rawCategories) ? rawCategories : [rawCategories];
   }
 
   try {
-    const items = await knex("items").select("*");
+    let items = await knex("items")
+      .leftJoin("users", "items.userID", "users.userID")
+      .select("items.*", knex.raw("users.username as claimedBy"));
 
-    const categories = Array.from(new Set(items.map((i) => i.category)));
-
-    let filteredItems = items;
-
+    // Filter by search
     if (q) {
-      filteredItems = filteredItems.filter((item) => {
-        const name = (item.itemName || "").toLowerCase();
-        const desc = (item.itemDesc || "").toLowerCase();
-        return name.includes(q) || desc.includes(q);
-      });
+      items = items.filter(item =>
+        (item.itemName || "").toLowerCase().includes(q) ||
+        (item.itemDesc || "").toLowerCase().includes(q)
+      );
     }
 
+    // Filter by category
     if (selectedCategories.length > 0) {
-      filteredItems = filteredItems.filter((item) =>
-        selectedCategories.includes(item.category)
-      );
+      items = items.filter(item => selectedCategories.includes(item.category));
+    }
+
+    // Filter unclaimed
+    if (showUnclaimed) {
+      items = items.filter(item => !item.userID);
     }
 
     res.render("market", {
       user: req.session.username,
       loggedIn: isLoggedIn(req),
-      items: filteredItems,
-      categories,
+      items,
+      categories: Array.from(new Set(items.map(i => i.category))),
       selectedCategories,
       q,
+      showUnclaimed,
     });
   } catch (err) {
     console.error("Market error:", err);
@@ -176,16 +175,13 @@ app.get("/market", async (req, res) => {
   }
 });
 
-// ✅ Claim item (DB version)
+// Claim item
 app.post("/claim/:id", async (req, res) => {
   if (!isLoggedIn(req)) return res.redirect("/login");
-
   try {
     await knex("items")
-      .where({ id: req.params.id })
-      .andWhere("claimedBy", null)
-      .update({ claimedBy: req.session.username });
-
+      .where({ itemID: req.params.id, userID: null })
+      .update({ userID: req.session.userID, itemDateClaimed: new Date() });
     res.redirect("/market");
   } catch (err) {
     console.error("Claim error:", err);
@@ -193,41 +189,45 @@ app.post("/claim/:id", async (req, res) => {
   }
 });
 
-// ✅ Unclaim item (DB version)
+// Unclaim item
+// Unclaim item
 app.post("/unclaim/:id", async (req, res) => {
-  if (!isLoggedIn(req)) return res.redirect("/login");
+  if (!req.session.loggedIn) return res.redirect("/login");
+
+  const itemId = req.params.id;
+  const userId = req.session.userID;
 
   try {
-    await knex("items")
-      .where({ id: req.params.id, claimedBy: req.session.username })
-      .update({ claimedBy: null });
+    // Only unclaim if this user currently owns the item
+    const updated = await knex("items")
+      .where({ itemID: itemId, userID: userId })
+      .update({
+        userID: null,
+        itemDateClaimed: null
+      });
+
+    if (updated === 0) {
+      // No item was updated (either invalid ID or not claimed by this user)
+      console.warn(`Unclaim failed: item ${itemId} not owned by user ${userId}`);
+    }
 
     res.redirect("/account");
   } catch (err) {
     console.error("Unclaim error:", err);
-    res.redirect("/account");
+    res.status(500).send("Server Error");
   }
 });
 
-// ✅ Account page – DB version
+
+// Account page
 app.get("/account", async (req, res) => {
-  if (!isLoggedIn(req)) {
-    return res.render("login", { error: "Please login to access your account." });
-  }
+  if (!isLoggedIn(req)) return res.render("login", { error: "Please login to access your account." });
 
   try {
-    const userItems = await knex("items")
-      .where({ claimedBy: req.session.username });
-
+    const userItems = await knex("items").select("*").where("userID", req.session.userID);
     let safeUsers = [];
-
     if (req.session.role === "M") {
-      const users = await knex("users").select(
-        "username",
-        "name",
-        "role"
-      );
-      safeUsers = users;
+      safeUsers = await knex("users").select("userID", "username", "userFirstName", "userLastName", "role");
     }
 
     res.render("account", {
@@ -243,27 +243,22 @@ app.get("/account", async (req, res) => {
   }
 });
 
-// ✅ Manager update users
+// Manager update users
 app.post("/user/update", async (req, res) => {
-  if (!isLoggedIn(req) || req.session.role !== "M") {
-    return res.status(403).send("Forbidden");
-  }
+  if (!isLoggedIn(req) || req.session.role !== "M") return res.status(403).send("Forbidden");
 
-  const { username, name, password, role } = req.body;
+  const { username, userFirstName, userLastName, password, role } = req.body;
 
   try {
     const updateData = {};
-    if (name) updateData.name = name;
+    if (userFirstName) updateData.userFirstName = userFirstName;
+    if (userLastName) updateData.userLastName = userLastName;
     if (password) updateData.password = password;
     if (role) updateData.role = role;
 
-    await knex("users")
-      .where({ username })
-      .update(updateData);
+    await knex("users").where({ username }).update(updateData);
 
-    if (req.session.username === username && role) {
-      req.session.role = role;
-    }
+    if (req.session.username === username && role) req.session.role = role;
 
     res.redirect("/account");
   } catch (err) {
@@ -273,6 +268,4 @@ app.post("/user/update", async (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

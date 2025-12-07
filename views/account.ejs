@@ -2,51 +2,72 @@
 
 <main class="account-section">
   <h1>Welcome, <%= user %></h1>
-  <h2>Your Claimed Items</h2>
 
-  <% if (items.length > 0) { %>
-    <ul class="claimed-items">
-      <% items.forEach(i => { %>
-        <li class="claimed-item">
-          <strong><%= i.itemName || i.name %></strong> — <%= i.itemDesc || i.desc %>
+  <!-- Claimed Items Section -->
+  <section class="account-info-container card">
+    <h2>Your Claimed Items</h2>
 
-          <form action="/unclaim/<%= i.id %>" method="POST" class="unclaim-form">
-            <button type="submit" class="button small red">Unclaim</button>
-          </form>
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    <p>You haven’t claimed any items yet. Visit the <a href="/market">Market</a> to claim some!</p>
-  <% } %>
+    <% if (items.length > 0) { %>
+      <ul class="claimed-items">
+        <% items.forEach(i => { %>
+          <li class="claimed-item card-item">
+            <div class="item-details">
+              <strong><%= i.itemName %></strong>
+              <p><%= i.itemDesc %></p>
+            </div>
+            <form action="/unclaim/<%= i.itemID %>" method="POST" class="unclaim-form">
+              <button type="submit" class="button small red">Unclaim</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p class="no-items">You haven’t claimed any items yet. Visit the Market to claim some!</p>
+    <% } %>
+    <a href="/market" class="button small">Go to Market</a>
+  </section>
 
   <% if (role === 'M') { %>
-    <section class="manager-section">
+    <!-- Manager Section -->
+    <section class="manager-section card">
       <h2>Manager — Edit User</h2>
 
       <form action="/user/update" method="POST" class="manager-form">
-        <label for="username">Select user:</label>
-        <select id="username" name="username">
-          <% users.forEach(u => { %>
-            <option value="<%= u.username %>">
-              <%= u.username %> — <%= u.name %> (<%= u.role %>)
-            </option>
-          <% }) %>
-        </select>
+        <div class="form-group">
+          <label for="username">Select user:</label>
+          <select id="username" name="username">
+            <% users.forEach(u => { %>
+              <option value="<%= u.username %>">
+                <%= u.username %> — <%= u.userFirstName %> <%= u.userLastName %> (<%= u.role %>)
+              </option>
+            <% }) %>
+          </select>
+        </div>
 
-        <label for="name">Name:</label>
-        <input id="name" name="name" type="text" placeholder="New display name" />
+        <div class="form-group">
+          <label for="userFirstName">First Name:</label>
+          <input id="userFirstName" name="userFirstName" type="text" placeholder="New first name" />
+        </div>
 
-        <label for="password">Password:</label>
-        <input id="password" name="password" type="password" placeholder="New password (leave blank to keep)" />
+        <div class="form-group">
+          <label for="userLastName">Last Name:</label>
+          <input id="userLastName" name="userLastName" type="text" placeholder="New last name" />
+        </div>
 
-        <label for="role">Role:</label>
-        <select id="role" name="role">
-          <option value="U">User (U)</option>
-          <option value="M">Manager (M)</option>
-        </select>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input id="password" name="password" type="password" placeholder="New password (leave blank to keep)" />
+        </div>
 
-        <div style="margin-top:.5rem">
+        <div class="form-group">
+          <label for="role">Role:</label>
+          <select id="role" name="role">
+            <option value="U">User (U)</option>
+            <option value="M">Manager (M)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
           <button type="submit" class="button small">Update User</button>
         </div>
       </form>

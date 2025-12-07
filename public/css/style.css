@@ -32,33 +32,40 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   font-family: 'Open Sans', sans-serif;
   background: var(--ivory);
   color: var(--text);
   line-height: 1.6;
-  min-height: 100vh;
+}
+
+/* Ensure main content pushes footer down */
+main, section {
+  flex: 1 0 auto;
 }
 
 /* 🌿 Headings */
 h1 {
-  font-family: sans-serif, serif;
-  color: black;
+  font-family: 'Playfair Display', serif;
+  color: var(--text);
   margin-bottom: 0.8rem;
   font-size: 1.8rem;
 }
 
 h2 {
-  font-family: sans-serif, serif;
+  font-family: 'Playfair Display', serif;
   color: var(--text);
   margin-bottom: 0.8rem;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 }
 
 h3 {
-  font-family: sans-serif, serif;
-  color: var(--text);
+  font-family: 'Playfair Display', serif;
+  color: var(--ivory);
   margin-bottom: 0.8rem;
-  color: var(--ivory)
+  font-size: 1.2rem;
 }
 
 /* 💛 Buttons & Links */
@@ -86,7 +93,7 @@ a:hover, .button:hover, button:hover {
 }
 
 /* 💬 Error Messages */
-.error, .login-message {
+.error, .login-message, .error-box {
   color: #b33a3a;
   background: #fbeaea;
   border: 1px solid #f0c6c6;
@@ -108,7 +115,7 @@ header, .site-header {
 }
 
 .logo h2 {
-  font-family: sans-serif, sans-serif;
+  font-family: 'Playfair Display', serif;
   color: var(--nature);
   margin: 0;
 }
@@ -155,23 +162,13 @@ header, .site-header {
   background: url("/images/home.jpg") center/cover no-repeat;
 }
 
-
 .hero-overlay {
   position: absolute;
-  top: 0; 
-  left: 0; 
-  right: 0; 
-  bottom: 0;
-
-  /* Background image */
+  top: 0; left: 0; right: 0; bottom: 0;
   background-image: url('../images/pexels-cadomaestro-3677150.jpg');
-  background-size: cover;       /* Make it cover the entire section */
-  background-position: center;  /* Center it */
-  background-repeat: no-repeat; /* Don’t tile it */
-
-  /* Rotate the background */
-  transform: rotate(0deg);     /* Adjust the degrees as you like */
-
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,27 +177,22 @@ header, .site-header {
   color: var(--text);
 }
 
-/* Background blur behind the hero text */
 .hero-overlay::before {
   content: "";
   position: absolute;
-  top: 0; 
-  left: 0; 
-  right: 0; 
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-image: url('../images/pexels-cadomaestro-3677150.jpg');
   background-size: cover;
   background-position: center;
-  filter: blur(5px) brightness(1); /* blur + darken for readability */
-  z-index: -1; /* keeps it behind the text */
+  filter: blur(5px) brightness(1);
+  z-index: -1;
 }
 
 .hero-text h1 {
   font-size: 5rem;
   margin-bottom: 1rem;
-  font-family: sans-serif;
-  font-weight:bold;
-  color: var(--text)
+  font-weight: bold;
+  color: var(--text);
 }
 
 .hero-text p {
@@ -208,7 +200,7 @@ header, .site-header {
   margin: 0 auto 1.5rem;
   font-size: 2rem;
   line-height: 1.5;
-  font-weight:bold;
+  font-weight: bold;
 }
 
 /* ========== Categories Section ========== */
@@ -238,8 +230,6 @@ header, .site-header {
 .category-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 12px var(--shadow);
-  background: var(--blush);
-  color: var(--ivory);
 }
 
 /* ========== About Section ========== */
@@ -258,9 +248,9 @@ header, .site-header {
 }
 
 .about-photo {
-  width: 300px;      /* or 100%, or whatever size you want */
-  height: 300px;     /* same value = square */
-  object-fit: cover; /* crops it nicely */
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 3px 8px var(--shadow);
 }
@@ -441,40 +431,34 @@ header, .site-header {
   margin-bottom: 0.4rem;
 }
 
-@media (max-width: 700px) {
-  .market-filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .market-filters .search-box {
-    width: 100%;
-  }
-  .category-filters {
-    width: 100%;
-  }
-}
-
-/* 🏡 Footer */
-footer {
+/* ========== Footer (sticky & pink) ========== */
+footer.site-footer {
+  background-color: var(--pink);
+  color: var(--ivory);
   text-align: center;
-  padding: 1.5rem 0;
-  color: var(--muted);
-  font-size: 0.9rem;
+  padding: 2rem 1rem;
+  font-size: 0.95rem;
+  flex-shrink: 0;
 }
 
-/* 📱 Responsive Adjustments */
+/* ========== Responsive Adjustments ========== */
 @media (max-width: 700px) {
   header, .site-header {
     flex-direction: column;
     text-align: center;
   }
 
-  .market {
-    grid-template-columns: 1fr;
+  .market-filters {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .home-title {
-    font-size: 2.3rem;
+  .market-filters .search-box {
+    width: 100%;
+  }
+
+  .category-filters {
+    width: 100%;
   }
 
   .about-grid {
@@ -494,3 +478,226 @@ footer {
   transform: translateY(-7px);
   box-shadow: 0 7px 20px rgba(0,0,0,0.25);
 }
+/* ================= Account Page ================= */
+.account-section {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.account-container {
+  max-width: 900px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.account-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Card style for sections */
+.card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 1px solid #e0e0e0;
+}
+
+/* Claimed items */
+.claimed-items {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.claimed-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+}
+
+.card-item:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.item-info p {
+  margin: 0.2rem 0 0 0;
+  color: #555;
+}
+
+/* Manager section form */
+.manager-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.manager-form input,
+.manager-form select {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.unclaim-form button.red {
+  background: #ff6b6b;
+  color: #fff;
+  border: none;
+}
+
+.unclaim-form button.red:hover {
+  background: #e85050;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .claimed-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* Account Page Styling */
+.account-section {
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.card {
+  background: var(--ivory);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.claimed-items {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.claimed-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--blush);
+  color: var(--ivory);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.claimed-item .item-details p {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+}
+
+.unclaim-form button {
+  background: #fc6b6b;
+}
+
+.manager-section .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.manager-section label {
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+
+.manager-section input,
+.manager-section select {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.manager-section button {
+  align-self: flex-start;
+}
+
+.account-section {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.account-info-container {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.claimed-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.claimed-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  background: #f9f9f9;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.item-details {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.unclaim-form {
+  flex-shrink: 0; /* prevents shrinking */
+}
+
+.unclaim-form button {
+  cursor: pointer;
+}
+
+/* Optional: hover effect */
+.claimed-item:hover {
+  background: #f0f0f0;
+}
+
+.manager-section {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-top: 2rem;
+}
+
+.manager-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.button.small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+

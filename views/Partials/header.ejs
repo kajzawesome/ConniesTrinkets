@@ -20,8 +20,11 @@
 
   <nav class="nav-menu">
     <a href="/">Home</a>
-    <a href="#items">Items</a>
+    <a href="/market">Items</a>
     <a href="#about">About Her</a>
+    <% if (loggedIn) { %>
+      <a href="/account">Account</a>
+    <% } %>
   </nav>
 
   <div class="login-button">
