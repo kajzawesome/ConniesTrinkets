@@ -1,81 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Market | Connie’s Trinkets</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
+<%- include('partials/header', { title: "Market | Connie’s Trinkets", loggedIn: loggedIn }) %>
 
-  <!-- Header -->
-  <header class="site-header">
-    <div class="logo"><h2>Connie’s Trinkets</h2></div>
-    <nav class="nav-menu">
-      <a href="/">Home</a>
-      <a href="/market">All Items</a>
-      <a href="/account">My Account</a>
-    </nav>
-    <div class="login-button">
-      <% if (loggedIn) { %>
-        <a href="/logout" class="button small">Logout</a>
-      <% } else { %>
-        <a href="/login" class="button small">Login</a>
-      <% } %>
+<section class="market">
+  <h1>Items</h1>
+  <p>Choose an item to claim or view details.</p>
+
+  <form class="market-filters" method="GET" action="/market">
+    <div class="search-box">
+      <label for="q">Search:</label>
+      <input
+        type="text"
+        id="q"
+        name="q"
+        placeholder="Search name or description"
+        value="<%= q || '' %>"
+      />
+      <button type="submit" class="button small">Search</button>
+      <a href="/market" class="button small">Clear</a>
     </div>
-  </header>
 
-  <!-- Items -->
-  <section class="market">
-    <h1>Items</h1>
-    <p>Choose an item to claim or view details.</p>
+    <fieldset class="category-filters">
+      <legend>Categories</legend>
 
-    <form class="market-filters" method="GET" action="/market">
-      <div class="search-box">
-        <label for="q">Search:</label>
-        <input type="text" id="q" name="q" placeholder="Search name or description" value="<%= q || '' %>" />
-        <button type="submit" class="button small">Search</button>
-        <a href="/market" class="button small">Clear</a>
-      </div>
-
-      <fieldset class="category-filters">
-        <legend>Categories</legend>
-        <% if (categories && categories.length > 0) { %>
-          <% categories.forEach(cat => { %>
-            <label class="checkbox-inline">
-              <input type="checkbox" name="categories" value="<%= cat %>" <%= (selectedCategories || []).includes(cat) ? 'checked' : '' %> /> <%= cat %>
-            </label>
-          <% }) %>
-        <% } %>
-      </fieldset>
-    </form>
-
-    <div class="item-grid">
-      <% if (items && items.length > 0) { %>
-        <% items.forEach(item => { %>
-          <div class="item-card <%= item.userID ? 'claimed-item' : '' %>">
-            <img src="<%= item.image || '/images/default.jpg' %>" alt="<%= item.itemName %>" />
-            <h3><%= item.itemName %></h3>
-            <p><%= item.itemDesc %></p>
-            <p class="claimed-status">
-              <% if (item.userID) { %>
-                <span class="claimed">Claimed by <%= item.userID %></span>
-              <% } else { %>
-                <form action="/claim/<%= item.itemID %>" method="POST">
-                  <button type="submit" class="button small">Claim Item</button>
-                </form>
-              <% } %>
-            </p>
-          </div>
+      <% if (categories && categories.length > 0) { %>
+        <% categories.forEach(cat => { %>
+          <label class="checkbox-inline">
+            <input
+              type="checkbox"
+              name="categories"
+              value="<%= cat %>"
+              <%= (selectedCategories || []).includes(cat) ? 'checked' : '' %>
+            />
+            <%= cat %>
+          </label>
         <% }) %>
-      <% } else { %>
-        <p class="no-items">No items found in this category.</p>
       <% } %>
-    </div>
-  </section>
+    </fieldset>
+  </form>
 
-  <footer>
-    <p>Made with love by the family • © <%= new Date().getFullYear() %> Grandma’s Legacy</p>
-  </footer>
+  <div class="item-grid">
+    <% if (items && items.length > 0) { %>
+      <% items.forEach(item => { %>
+        <div class="item-card <%= item.claimedBy ? 'claimed-item' : '' %>">
+          <img
+            src="<%= item.image || '/images/default.jpg' %>"
+            alt="<%= item.itemName %>"
+          />
 
-</body>
-</html>
+          <h3><%= item.itemName %></h3>
+          <p><%= item.itemDesc %></p>
+
+          <p class="claimed-status">
+            <% if (item.claimedBy) { %>
+              <span class="claimed">
+                Claimed by <%= item.claimedBy %>
+              </span>
+            <% } else { %>
+              <form action="/claim/<%= item.id %>" method="POST">
+                <button type="submit" class="button small">
+                  Claim Item
+                </button>
+              </form>
+            <% } %>
+          </p>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="no-items">No items found.</p>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

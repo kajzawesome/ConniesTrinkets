@@ -1,79 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>My Account | Connie’s Trinkets</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <script src="/js/script.js"></script>
-</head>
-<body>
+<%- include('partials/header', { title: "My Account | Connie’s Trinkets", loggedIn: loggedIn }) %>
 
-  <!-- 🌿 Header -->
-  <header class="site-header">
-    <div class="logo"><h2>Connie’s Trinkets</h2></div>
-    <nav class="nav-menu">
-      <a href="/">Home</a>
-      <a href="/market">Market</a>
-    </nav>
-    <div class="login-button">
-      <a href="/logout" class="button small">Logout</a>
-    </div>
-  </header>
+<main class="account-section">
+  <h1>Welcome, <%= user %></h1>
+  <h2>Your Claimed Items</h2>
 
-  <!-- 🏡 Account Section -->
-  <main class="account-section">
-    <h1>Welcome, <%= user %></h1>
-    <h2>Your Claimed Items</h2>
+  <% if (items.length > 0) { %>
+    <ul class="claimed-items">
+      <% items.forEach(i => { %>
+        <li class="claimed-item">
+          <strong><%= i.itemName || i.name %></strong> — <%= i.itemDesc || i.desc %>
 
-    <% if (items.length > 0) { %>
-      <ul class="claimed-items">
-        <% items.forEach(i => { %>
-          <li class="claimed-item">
-            <strong><%= i.name %></strong> — <%= i.desc %>
-            <form action="/unclaim/<%= i.id %>" method="POST" class="unclaim-form">
-              <button type="submit" class="button small red">Unclaim</button>
-            </form>
-          </li>
-        <% }) %>
-      </ul>
-    <% } else { %>
-      <p>You haven’t claimed any items yet. Visit the <a href="/market">Market</a> to claim some!</p>
-    <% } %>
-  
-    <% if (role === 'M') { %>
-      <section class="manager-section">
-        <h2>Manager — Edit User</h2>
-        <form action="/user/update" method="POST" class="manager-form">
-          <label for="username">Select user:</label>
-          <select id="username" name="username">
-            <% users.forEach(u => { %>
-              <option value="<%= u.username %>"><%= u.username %> — <%= u.name %> (<%= u.role %>)</option>
-            <% }) %>
-          </select>
+          <form action="/unclaim/<%= i.id %>" method="POST" class="unclaim-form">
+            <button type="submit" class="button small red">Unclaim</button>
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>You haven’t claimed any items yet. Visit the <a href="/market">Market</a> to claim some!</p>
+  <% } %>
 
-          <label for="name">Name:</label>
-          <input id="name" name="name" type="text" placeholder="New display name" />
+  <% if (role === 'M') { %>
+    <section class="manager-section">
+      <h2>Manager — Edit User</h2>
 
-          <label for="password">Password:</label>
-          <input id="password" name="password" type="password" placeholder="New password (leave blank to keep)" />
+      <form action="/user/update" method="POST" class="manager-form">
+        <label for="username">Select user:</label>
+        <select id="username" name="username">
+          <% users.forEach(u => { %>
+            <option value="<%= u.username %>">
+              <%= u.username %> — <%= u.name %> (<%= u.role %>)
+            </option>
+          <% }) %>
+        </select>
 
-          <label for="role">Role:</label>
-          <select id="role" name="role">
-            <option value="U">User (U)</option>
-            <option value="M">Manager (M)</option>
-          </select>
+        <label for="name">Name:</label>
+        <input id="name" name="name" type="text" placeholder="New display name" />
 
-          <div style="margin-top:.5rem">
-            <button type="submit" class="button small">Update User</button>
-          </div>
-        </form>
-      </section>
-    <% } %>
-  </main>
+        <label for="password">Password:</label>
+        <input id="password" name="password" type="password" placeholder="New password (leave blank to keep)" />
 
-  <footer>
-    <p>Made with love by the family • © <%= new Date().getFullYear() %> Grandma’s Legacy</p>
-  </footer>
+        <label for="role">Role:</label>
+        <select id="role" name="role">
+          <option value="U">User (U)</option>
+          <option value="M">Manager (M)</option>
+        </select>
 
-</body>
-</html>
+        <div style="margin-top:.5rem">
+          <button type="submit" class="button small">Update User</button>
+        </div>
+      </form>
+    </section>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>
