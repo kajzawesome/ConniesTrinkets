@@ -1,25 +1,34 @@
 <%- include('partials/header', { title: "Register | Connie’s Trinkets", loggedIn: false }) %>
 
-<section class="register">
-  <h2>Create Your Account</h2>
-  <p>Join our family marketplace to claim items and view your account.</p>
+<section class="login-section">
+  <div class="account-card" style="max-width:500px;margin:0 auto;">
+    <h2>Create Your Account</h2>
+    <p>Join our family marketplace to claim items and manage your account.</p>
 
-  <% if (error) { %>
-    <div class="error-box"><%= error %></div>
-  <% } %>
+    <% if (error) { %>
+      <div class="login-message"><%= error %></div>
+    <% } %>
 
-  <form action="/register" method="POST" class="form-card">
-    <label for="name">Full Name</label>
-    <input type="text" name="name" id="name" required />
+    <form action="/register" method="POST" class="manager-form">
+      <div class="form-group">
+        <input type="text" name="userFirstName" placeholder="First Name" required />
+      </div>
 
-    <label for="username">Username</label>
-    <input type="text" name="username" id="username" required />
+      <div class="form-group">
+        <input type="text" name="userLastName" placeholder="Last Name" required />
+      </div>
 
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required />
+      <div class="form-group">
+        <input type="text" name="username" placeholder="Username" required />
+      </div>
 
-    <button type="submit" class="button">Register</button>
-  </form>
+      <div class="form-group">
+        <input type="password" name="password" placeholder="Password" required />
+      </div>
+
+      <button type="submit" class="btn">Register</button>
+    </form>
+  </div>
 </section>
 
 <%- include('partials/footer') %>

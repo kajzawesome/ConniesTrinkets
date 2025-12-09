@@ -338,12 +338,6 @@ header, .site-header {
   margin-bottom: 0.5rem;
 }
 
-/* Claimed items */
-.claimed-item {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
 .claimed-item:hover {
   transform: none;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -701,3 +695,21 @@ footer.site-footer {
   font-size: 0.9rem;
 }
 
+/* ✅ Fixed claimed item behavior */
+.is-claimed {
+  opacity: 0.6;
+}
+
+/* Only disable the CLAIM button inside claimed cards */
+.is-claimed .claim-form button {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Allow Unclaim button to stay clickable */
+.unclaim-form button {
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+  cursor: pointer;
+}

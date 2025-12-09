@@ -1,78 +1,80 @@
 <%- include('partials/header', { title: "My Account | Connie’s Trinkets", loggedIn: loggedIn }) %>
 
 <main class="account-section">
-  <h1>Welcome, <%= user %></h1>
+
+  <h1 class="account-title">Welcome, <%= user %></h1>
 
   <!-- Claimed Items Section -->
-  <section class="account-info-container card">
+  <section class="account-card">
     <h2>Your Claimed Items</h2>
 
     <% if (items.length > 0) { %>
       <ul class="claimed-items">
         <% items.forEach(i => { %>
-          <li class="claimed-item card-item">
+          <li class="card-item account-item">
             <div class="item-details">
               <strong><%= i.itemName %></strong>
               <p><%= i.itemDesc %></p>
             </div>
+
             <form action="/unclaim/<%= i.itemID %>" method="POST" class="unclaim-form">
-              <button type="submit" class="button small red">Unclaim</button>
+              <button type="submit" class="btn btn-danger">Unclaim</button>
             </form>
           </li>
         <% }) %>
       </ul>
     <% } else { %>
-      <p class="no-items">You haven’t claimed any items yet. Visit the Market to claim some!</p>
+      <p class="no-items">You haven’t claimed any items yet.</p>
     <% } %>
-    <a href="/market" class="button small">Go to Market</a>
+
+    <a href="/market" class="btn btn-secondary">Go to Market</a>
   </section>
 
   <% if (role === 'M') { %>
-    <!-- Manager Section -->
-    <section class="manager-section card">
-      <h2>Manager — Edit User</h2>
+  <!-- Manager Section -->
+  <section class="account-card manager-card">
+    <h2>Manager — Edit User</h2>
 
-      <form action="/user/update" method="POST" class="manager-form">
-        <div class="form-group">
-          <label for="username">Select user:</label>
-          <select id="username" name="username">
-            <% users.forEach(u => { %>
-              <option value="<%= u.username %>">
-                <%= u.username %> — <%= u.userFirstName %> <%= u.userLastName %> (<%= u.role %>)
-              </option>
-            <% }) %>
-          </select>
-        </div>
+    <form action="/user/update" method="POST" class="manager-form">
+      <div class="form-group">
+        <label>Select User</label>
+        <select name="username">
+          <% users.forEach(u => { %>
+            <option value="<%= u.username %>">
+              <%= u.username %> — <%= u.userFirstName %> <%= u.userLastName %> (<%= u.role %>)
+            </option>
+          <% }) %>
+        </select>
+      </div>
 
-        <div class="form-group">
-          <label for="userFirstName">First Name:</label>
-          <input id="userFirstName" name="userFirstName" type="text" placeholder="New first name" />
-        </div>
+      <div class="form-group">
+        <label>First Name</label>
+        <input name="userFirstName" placeholder="New first name" />
+      </div>
 
-        <div class="form-group">
-          <label for="userLastName">Last Name:</label>
-          <input id="userLastName" name="userLastName" type="text" placeholder="New last name" />
-        </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input name="userLastName" placeholder="New last name" />
+      </div>
 
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input id="password" name="password" type="password" placeholder="New password (leave blank to keep)" />
-        </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input name="password" type="password" placeholder="Leave blank to keep current" />
+      </div>
 
-        <div class="form-group">
-          <label for="role">Role:</label>
-          <select id="role" name="role">
-            <option value="U">User (U)</option>
-            <option value="M">Manager (M)</option>
-          </select>
-        </div>
+      <div class="form-group">
+        <label>Role</label>
+        <select name="role">
+          <option value="U">User</option>
+          <option value="M">Manager</option>
+        </select>
+      </div>
 
-        <div class="form-group">
-          <button type="submit" class="button small">Update User</button>
-        </div>
-      </form>
-    </section>
+      <button type="submit" class="btn">Update User</button>
+    </form>
+  </section>
   <% } %>
+
 </main>
 
 <%- include('partials/footer') %>

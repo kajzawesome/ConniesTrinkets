@@ -4,61 +4,71 @@
   <h1>Items</h1>
   <p>Choose an item to claim or view details.</p>
 
-<form class="market-filters" method="GET" action="/market">
-  <div class="search-box">
-    <label for="q">Search:</label>
-    <input type="text" id="q" name="q" placeholder="Search name or description" value="<%= q || '' %>" />
-    <button type="submit" class="button small">Search</button>
-    <a href="/market" class="button small">Clear</a>
-  </div>
+  <form class="market-filters" method="GET" action="/market">
+    <div class="search-box">
+      <label for="q">Search:</label>
+      <input
+        type="text"
+        id="q"
+        name="q"
+        placeholder="Search name or description"
+        value="<%= q || '' %>"
+      />
+      <button type="submit" class="btn">Search</button>
+      <a href="/market" class="btn btn-secondary">Clear</a>
+    </div>
 
-  <fieldset class="category-filters">
-    <legend>Categories</legend>
-    <% if (categories && categories.length > 0) { %>
-      <% categories.forEach(cat => { %>
-        <label class="checkbox-inline">
-          <input
-            type="checkbox"
-            name="categories"
-            value="<%= cat %>"
-            <%= (selectedCategories || []).includes(cat) ? 'checked' : '' %>
-          />
-          <%= cat %>
-        </label>
-      <% }) %>
-    <% } %>
-  </fieldset>
+    <fieldset class="category-filters">
+      <legend>Categories</legend>
+      <% if (categories && categories.length > 0) { %>
+        <% categories.forEach(cat => { %>
+          <label class="checkbox-inline">
+            <input
+              type="checkbox"
+              name="categories"
+              value="<%= cat %>"
+              <%= (selectedCategories || []).includes(cat) ? 'checked' : '' %>
+            />
+            <%= cat %>
+          </label>
+        <% }) %>
+      <% } %>
+    </fieldset>
 
-  <label class="checkbox-inline">
-    <input
-      type="checkbox"
-      name="showUnclaimed"
-      value="1"
-      <%= showUnclaimed ? 'checked' : '' %>
-    />
-    Show only unclaimed items
-  </label>
-</form>
+    <label class="checkbox-inline">
+      <input
+        type="checkbox"
+        name="showUnclaimed"
+        value="1"
+        <%= showUnclaimed ? 'checked' : '' %>
+      />
+      Show only unclaimed items
+    </label>
+  </form>
 
   <div class="item-grid">
     <% if (items && items.length > 0) { %>
       <% items.forEach(item => { %>
-        <div class="item-card <%= item.userID ? 'claimed-item' : '' %>">
-          <img src="<%= item.itemImagePath || '/images/default.jpg' %>" alt="<%= item.itemName %>"/>
+        <div class="item-card <%= item.userID ? 'is-claimed' : '' %>">
+          <img
+            src="<%= item.itemImagePath || '/images/default.jpg' %>"
+            alt="<%= item.itemName %>"
+          />
+
           <h3><%= item.itemName %></h3>
           <p><%= item.itemDesc %></p>
-          
-          <p class="claimed-status">
+
+          <div class="claimed-status">
             <% if (item.userID) { %>
               <span class="claimed">
                 Claimed by <%= item.claimedBy || 'someone' %>
               </span>
             <% } else { %>
               <form action="/claim/<%= item.itemID %>" method="POST">
-                <button type="submit" class="button small">Claim Item</button>
+                <button type="submit" class="btn small">Claim Item</button>
               </form>
             <% } %>
-          </p>
+          </div>
         </div>
       <% }) %>
     <% } else { %>
