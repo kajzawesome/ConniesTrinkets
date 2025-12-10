@@ -267,5 +267,109 @@ app.post("/user/update", async (req, res) => {
   }
 });
 
+// Add new item
+app.get('/items/new', (req, res) => {
+  if (!req.session.loggedIn || req.session.role !== 'M') {
+    return res.redirect('/login');
+  }
+
+  res.render('pages/add-item', {
+    loggedIn: true,
+    error: null
+  });
+});
+
+app.post('/items', (req, res) => {
+  if (!req.session.loggedIn || req.session.role !== 'M') {
+    return res.redirect('/login');
+  }
+
+  const { itemName, itemDesc, category } = req.body;
+
+  const query = `
+    INSERT INTO items (itemName, itemDesc, category)
+    VALUES ($1, $2, $3)
+  `;
+
+  pool.query(query, [itemName, itemDesc, category])
+    .then(() => res.redirect('/market'))
+    .catch(err => {
+      console.error(err);
+      res.render('pages/add-item', {
+        loggedIn: true,
+        error: 'Error adding item.'
+      });
+    });
+});
+
+// Edit item
+app.get('/item/:id/edit', (req, res) => {
+  if (!req.session.loggedIn || req.session.role !== 'M') {
+    return res.redirect('/login');
+  }
+
+  const itemID = req.params.id;
+
+  const query = 'SELECT * FROM items WHERE itemID = $1';
+
+  pool.query(query, [itemID])
+    .then(result => {
+      const item = result.rows[0];
+      if (!item) return res.redirect('/market');
+
+      res.render('pages/edititem', {
+        title: `Edit ${item.itemName}`,
+        loggedIn: true,
+        item
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      res.redirect('/market');
+    });
+});
+
+app.post('/item/:id/edit', (req, res) => {
+  if (!req.session.loggedIn || req.session.role !== 'M') {
+    return res.redirect('/login');
+  }
+
+  const itemID = req.params.id;
+  const { itemName, itemDesc, category } = req.body;
+
+  const query = `
+    UPDATE items
+    SET itemName = $1,
+        itemDesc = $2,
+        category = $3
+    WHERE itemID = $4
+  `;
+
+  pool.query(query, [itemName, itemDesc, category, itemID])
+    .then(() => res.redirect('/market'))
+    .catch(err => {
+      console.error(err);
+      res.redirect('/market');
+    });
+});
+
+// Delete item
+app.post('/item/:id/delete', (req, res) => {
+  if (!req.session.loggedIn || req.session.role !== 'M') {
+    return res.redirect('/login');
+  }
+
+  const itemID = req.params.id;
+
+  const query = 'DELETE FROM items WHERE itemID = $1';
+
+  pool.query(query, [itemID])
+    .then(() => res.redirect('/market'))
+    .catch(err => {
+      console.error(err);
+      res.redirect('/market');
+    });
+});
+
 // Start server
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
