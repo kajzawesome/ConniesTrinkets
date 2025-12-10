@@ -2,7 +2,7 @@
 
 <main class="account-section">
 
-  <h1 class="account-title">Welcome, <%= user %></h1>
+  <h1 class="account-title">Welcome, <%= user.userFirstName %> <% user.userLastName %></h1>
 
   <!-- Claimed Items Section -->
   <section class="account-card">
@@ -30,7 +30,7 @@
     <a href="/market" class="btn btn-secondary">Go to Market</a>
   </section>
 
-  <% if (role === 'M') { %>
+  <% if (user.role === 'M') { %>
   <!-- Manager Section -->
   <section class="account-card manager-card">
     <h2>Manager — Edit User</h2>
@@ -73,8 +73,6 @@
       <button type="submit" class="btn">Update User</button>
     </form>
   </section>
-
-  <a href="/items/new" class="btn btn-primary">＋ Add New Item</a>
 
   <% } %>
 

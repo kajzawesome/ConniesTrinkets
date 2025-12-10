@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Claim item via AJAX
 document.addEventListener("DOMContentLoaded", () => {
-  const claimForms = document.querySelectorAll(".item-card form");
+  const claimForms = document.querySelectorAll(".claim-form");
   
   claimForms.forEach(form => {
     form.addEventListener("submit", async (e) => {

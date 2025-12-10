@@ -47,13 +47,29 @@ app.use((req, res, next) => {
   res.render("login", { error: "Please log in to access this page" });
 });
 
+const multer = require("multer");
+
+// Store uploaded images in /public/uploads/
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "public", "uploads"));
+  },
+  filename: function (req, file, cb) {
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, unique + ext);
+  }
+});
+
+const upload = multer({ storage });
+
 // ----------------- Routes -----------------
 
 // Home
 app.get("/", (req, res) => {
   res.render("index", {
     title: "Home",
-    user: req.session.username || null,
+    user: req.session.user || null,
     loggedIn: isLoggedIn(req),
   });
 });
@@ -85,9 +101,13 @@ app.post("/register", async (req, res) => {
       .returning("*");
 
     req.session.loggedIn = true;
-    req.session.username = newUser.username;
-    req.session.role = newUser.role;
-    req.session.userID = newUser.userID;
+    req.session.user = {
+      userID: newUser.userID,
+      username: newUser.username,
+      userFirstName: newUser.userFirstName,
+      userLastName: newUser.userLastName,
+      role: newUser.role
+    };
 
     res.redirect("/market");
   } catch (err) {
@@ -110,9 +130,13 @@ app.post("/login", async (req, res) => {
     if (!user) return res.render("login", { error: "Invalid login" });
 
     req.session.loggedIn = true;
-    req.session.username = user.username;
-    req.session.role = user.role;
-    req.session.userID = user.userID;
+    req.session.user = {
+      userID: user.userID,
+      username: user.username,
+      userFirstName: user.userFirstName,
+      userLastName: user.userLastName,
+      role: user.role
+    };
 
     res.redirect("/market");
   } catch (err) {
@@ -161,7 +185,7 @@ app.get("/market", async (req, res) => {
     }
 
     res.render("market", {
-      user: req.session.username,
+      user: req.session.user,
       loggedIn: isLoggedIn(req),
       items,
       categories: Array.from(new Set(items.map(i => i.category))),
@@ -181,7 +205,7 @@ app.post("/claim/:id", async (req, res) => {
   try {
     await knex("items")
       .where({ itemID: req.params.id, userID: null })
-      .update({ userID: req.session.userID, itemDateClaimed: new Date() });
+      .update({ userID: req.session.user.userID, itemDateClaimed: new Date() });
     res.redirect("/market");
   } catch (err) {
     console.error("Claim error:", err);
@@ -190,12 +214,11 @@ app.post("/claim/:id", async (req, res) => {
 });
 
 // Unclaim item
-// Unclaim item
 app.post("/unclaim/:id", async (req, res) => {
   if (!req.session.loggedIn) return res.redirect("/login");
 
   const itemId = req.params.id;
-  const userId = req.session.userID;
+  const userId = req.session.user.userID;
 
   try {
     // Only unclaim if this user currently owns the item
@@ -218,23 +241,21 @@ app.post("/unclaim/:id", async (req, res) => {
   }
 });
 
-
 // Account page
 app.get("/account", async (req, res) => {
   if (!isLoggedIn(req)) return res.render("login", { error: "Please login to access your account." });
 
   try {
-    const userItems = await knex("items").select("*").where("userID", req.session.userID);
+    const userItems = await knex("items").select("*").where("userID", req.session.user.userID);
     let safeUsers = [];
-    if (req.session.role === "M") {
+    if (req.session.user.role === "M") {
       safeUsers = await knex("users").select("userID", "username", "userFirstName", "userLastName", "role");
     }
 
     res.render("account", {
-      user: req.session.username,
+      user: req.session.user,
       loggedIn: isLoggedIn(req),
       items: userItems,
-      role: req.session.role,
       users: safeUsers,
     });
   } catch (err) {
@@ -245,7 +266,7 @@ app.get("/account", async (req, res) => {
 
 // Manager update users
 app.post("/user/update", async (req, res) => {
-  if (!isLoggedIn(req) || req.session.role !== "M") return res.status(403).send("Forbidden");
+  if (!isLoggedIn(req) || req.session.user.role !== "M") return res.status(403).send("Forbidden");
 
   const { username, userFirstName, userLastName, password, role } = req.body;
 
@@ -258,7 +279,7 @@ app.post("/user/update", async (req, res) => {
 
     await knex("users").where({ username }).update(updateData);
 
-    if (req.session.username === username && role) req.session.role = role;
+    if (req.session.user.username === username && role) req.session.user.role = role;
 
     res.redirect("/account");
   } catch (err) {
@@ -268,107 +289,135 @@ app.post("/user/update", async (req, res) => {
 });
 
 // Add new item
-app.get('/items/new', (req, res) => {
-  if (!req.session.loggedIn || req.session.role !== 'M') {
+app.get('/item/add', (req, res) => {
+  if (!req.session.loggedIn || req.session.user.role !== 'M') {
     return res.redirect('/login');
   }
 
-  res.render('pages/add-item', {
+  res.render('additem', {
     loggedIn: true,
     error: null
   });
 });
 
-app.post('/items', (req, res) => {
-  if (!req.session.loggedIn || req.session.role !== 'M') {
-    return res.redirect('/login');
+app.post("/item/add", upload.single("image"), async (req, res) => {
+  if (!req.session.loggedIn || req.session.user.role !== "M") {
+    return res.redirect("/login");
   }
 
   const { itemName, itemDesc, category } = req.body;
 
-  const query = `
-    INSERT INTO items (itemName, itemDesc, category)
-    VALUES ($1, $2, $3)
-  `;
+  // If an image was uploaded, build its path
+  const imagePath = req.file
+    ? `/uploads/${req.file.filename}`
+    : null;
 
-  pool.query(query, [itemName, itemDesc, category])
-    .then(() => res.redirect('/market'))
-    .catch(err => {
-      console.error(err);
-      res.render('pages/add-item', {
-        loggedIn: true,
-        error: 'Error adding item.'
-      });
+  try {
+    await knex("items").insert({
+      itemName,
+      itemDesc,
+      category,
+      itemImagePath: imagePath
     });
+
+    res.redirect("/market");
+
+  } catch (err) {
+    console.error("Add Item POST error:", err);
+
+    res.render("additem", {
+      loggedIn: true,
+      error: "Error adding item."
+    });
+  }
 });
 
-// Edit item
-app.get('/item/:id/edit', (req, res) => {
-  if (!req.session.loggedIn || req.session.role !== 'M') {
+app.get('/item/:id/edit', async (req, res) => {
+  if (!req.session.loggedIn || req.session.user.role !== 'M') {
     return res.redirect('/login');
   }
 
   const itemID = req.params.id;
 
-  const query = 'SELECT * FROM items WHERE itemID = $1';
+  try {
+    const item = await knex("items").where({ itemID }).first();
 
-  pool.query(query, [itemID])
-    .then(result => {
-      const item = result.rows[0];
-      if (!item) return res.redirect('/market');
+    if (!item) return res.redirect("/market");
 
-      res.render('pages/edititem', {
-        title: `Edit ${item.itemName}`,
-        loggedIn: true,
-        item
-      });
-    })
-    .catch(err => {
-      console.error(err);
-      res.redirect('/market');
+    res.render("edititem", {
+      title: `Edit ${item.itemName}`,
+      loggedIn: true,
+      user: req.session.user,
+      item
     });
+
+  } catch (err) {
+    console.error("Edit GET error:", err);
+    res.redirect("/market");
+  }
 });
 
-app.post('/item/:id/edit', (req, res) => {
-  if (!req.session.loggedIn || req.session.role !== 'M') {
-    return res.redirect('/login');
+app.post("/item/:id/edit", upload.single("image"), async (req, res) => {
+  if (!req.session.loggedIn || req.session.user.role !== "M") {
+    return res.redirect("/login");
   }
 
   const itemID = req.params.id;
   const { itemName, itemDesc, category } = req.body;
 
-  const query = `
-    UPDATE items
-    SET itemName = $1,
-        itemDesc = $2,
-        category = $3
-    WHERE itemID = $4
-  `;
+  try {
+    const existing = await knex("items").where({ itemID }).first();
 
-  pool.query(query, [itemName, itemDesc, category, itemID])
-    .then(() => res.redirect('/market'))
-    .catch(err => {
-      console.error(err);
-      res.redirect('/market');
+    if (!existing) {
+      return res.redirect("/market");
+    }
+
+    const imagePath = req.file
+      ? `/uploads/${req.file.filename}`
+      : existing.itemImagePath;
+
+    await knex("items")
+      .where({ itemID })
+      .update({
+        itemName,
+        itemDesc,
+        category,
+        itemImagePath: imagePath
+      });
+
+    res.redirect("/market");
+
+  } catch (err) {
+    console.error("Edit POST error:", err);
+    res.render("edititem", {
+      title: "Edit Item",
+      loggedIn: true,
+      user: req.session.user,
+      item: { itemID, itemName, itemDesc, category },
+      error: "Error updating item."
     });
+  }
 });
 
 // Delete item
-app.post('/item/:id/delete', (req, res) => {
-  if (!req.session.loggedIn || req.session.role !== 'M') {
+app.post('/item/:id/delete', async (req, res) => {
+  if (!req.session.loggedIn || req.session.user.role !== 'M') {
     return res.redirect('/login');
   }
 
   const itemID = req.params.id;
 
-  const query = 'DELETE FROM items WHERE itemID = $1';
+  try {
+    await knex("items")
+      .where({ itemID })
+      .del();
 
-  pool.query(query, [itemID])
-    .then(() => res.redirect('/market'))
-    .catch(err => {
-      console.error(err);
-      res.redirect('/market');
-    });
+    res.redirect("/market");
+
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.redirect("/market");
+  }
 });
 
 // Start server
