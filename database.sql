@@ -14,7 +14,9 @@ CREATE TABLE users (
 INSERT INTO users (username, password, "userFirstName", "userLastName", role)
 VALUES 
     ('manager1', 'managerpass1', 'Manager', 'One', 'M'),
-    ('manager2', 'managerpass2', 'Manager', 'Two',  'M');
+    ('manager2', 'managerpass2', 'Manager', 'Two',  'M'),
+    ('Frankie', 'frankiepass', 'Frankie', 'Smith', 'U'),
+    ('Samantha', 'samanthapass', 'Samantha', 'Johnson', 'U');
 
 CREATE TABLE items (
     "itemID" integer NOT NULL GENERATED ALWAYS AS IDENTITY,
@@ -31,4 +33,6 @@ INSERT INTO items ("itemName", "itemDesc", category, "itemImagePath") VALUES
     ('Porcelain Teacup', 'From her 50th anniversary trip to England.', 'keepsakes', '/uploads/1765346675124-398974655.webp'),
     ('Quilt Blanket', 'Handmade with love by Grandma.', 'keepsakes', '/uploads/1765346619967-569269074.jpg'),
     ('Photo Album', 'Family memories through the years.', 'books', '/uploads/1765346576414-792317014.jpg'),
-    ('Silver Necklace', 'Gift from Grandpa on their 40th anniversary.', 'jewelry', '/uploads/1765346529707-657069166.jpg');
+    ('Silver Necklace', 'Gift from Grandpa on their 40th anniversary.', 'jewelry', '/uploads/1765346529707-657069166.jpg'),
+    ('Wooden Rocking Chair', 'Passed down from great-grandparents.', 'furniture', '/uploads/country-lane-solid-wood-amish-rocking-chair-832645.png'),
+    ('Vintage Desk Lamp', 'Used by Dad during his college days.', 'furniture', '/uploads/41YzqdWvDUL._AC_UF894,1000_QL80_.jpg');

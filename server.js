@@ -7,7 +7,7 @@ const knex = require("knex")({
   connection: {
     host: process.env.RDS_HOST || "localhost",
     user: process.env.RDS_USER || "postgres",
-    password: process.env.RDS_PASSWORD || "12345",
+    password: process.env.RDS_PASSWORD || "admin",
     database: process.env.RDS_NAME || "ConniesTrinkets",
     port: process.env.RDS_PORT || 5432,
   },
@@ -34,7 +34,7 @@ const isLoggedIn = (req) => !!req.session.loggedIn;
 
 // Global auth middleware for protected routes
 app.use((req, res, next) => {
-  const openPaths = ["/", "/login", "/register", "/logout"];
+  const openPaths = ["/", "/login", "/register", "/about", "/logout"];
   if (
     openPaths.includes(req.path) ||
     req.path.startsWith("/css") ||
@@ -148,6 +148,15 @@ app.post("/login", async (req, res) => {
 // Logout
 app.get("/logout", (req, res) => {
   req.session.destroy(() => res.redirect("/"));
+});
+
+// About
+app.get('/about', (req, res) => {
+  res.render('about', {
+    title: 'About',
+    user: req.session.user || null,
+    loggedIn: isLoggedIn(req)
+  });
 });
 
 // Market
@@ -285,6 +294,45 @@ app.post("/user/update", async (req, res) => {
   } catch (err) {
     console.error("User update error:", err);
     res.redirect("/account");
+  }
+});
+
+// Delete user (manager only)
+app.post('/user/delete', async (req, res) => {
+  try {
+    // Make sure someone is logged in
+    if (!req.session.user) {
+      return res.redirect('/login');
+    }
+
+    // Only managers can delete users
+    if (req.session.user.role !== 'M') {
+      return res.status(403).send('Not authorized');
+    }
+
+    const { username } = req.body;
+
+    // Don't let a manager delete themselves (safety check)
+    if (username === req.session.user.username) {
+      return res.send('You cannot delete your own account.');
+    }
+
+    userID = await knex('users').where({ username }).first().then(user => user.userID);
+
+    // Unclaim all items owned by this user first
+    await knex('items')
+      .where({ userID: userID })
+      .update({ userID: null });
+
+    // Delete the user
+    await knex('users')
+      .where({ username })
+      .del();
+
+    res.redirect('/account');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error deleting user');
   }
 });
 

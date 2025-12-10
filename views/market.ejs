@@ -91,9 +91,11 @@
       <p class="no-items">No items found.</p>
     <% } %>
   </div>
-  <form action="/item/add" method="GET">
-    <button type="submit" class="btn btn-danger small">Add Item</button>
-  </form>
+  <% if (user.role === 'M') { %>
+    <form action="/item/add" method="GET">
+      <button type="submit" class="btn btn-danger small">Add Item</button>
+    </form>
+  <% } %>
 </section>
 
 <%- include('partials/footer') %>
