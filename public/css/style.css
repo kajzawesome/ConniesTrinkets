@@ -63,7 +63,6 @@ h2 {
 
 h3 {
   font-family: 'Playfair Display', serif;
-  color: var(--ivory);
   margin-bottom: 0.8rem;
   font-size: 1.2rem;
 }
@@ -73,7 +72,7 @@ a, .button, button {
   text-decoration: none;
   display: inline-block;
   background: var(--nature);
-  color: var(--limegreen);
+  color: white;
   border: none;
   padding: 0.8rem 1.6rem;
   border-radius: 10px;
@@ -89,7 +88,7 @@ a, .button, button {
 
 a:hover, .button:hover, button:hover {
   background: var(--limegreen);
-  color: var(--nature);
+  color: white;
 }
 
 /* 💬 Error Messages */
@@ -128,7 +127,7 @@ header, .site-header {
 .nav-menu a {
   margin: 0 0.8rem;
   font-weight: 600;
-  color: var(--limegreen);
+  color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   transition: 0.3s ease;
@@ -140,8 +139,8 @@ header, .site-header {
 }
 
 .login-button .button {
-  background: var(--blush);
-  color: var(--ivory);
+  background: var(--pixie);
+  color: white;
   font-weight: 600;
   margin-left: 1rem;
   padding: 0.5rem 1rem;
@@ -152,7 +151,7 @@ header, .site-header {
 
 .login-button .button:hover {
   background: #fc7284;
-  color: var(--ivory);
+  color: white;
 }
 
 /* ========== Hero Section ========== */
@@ -346,7 +345,6 @@ header, .site-header {
 .claimed-item .claimed {
   display: inline-block;
   background-color: #ff6b6b;
-  color: #fff;
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -428,7 +426,7 @@ header, .site-header {
 /* ========== Footer (sticky & pink) ========== */
 footer.site-footer {
   background-color: var(--pink);
-  color: var(--ivory);
+  color: white;
   text-align: center;
   padding: 2rem 1rem;
   font-size: 0.95rem;
@@ -551,8 +549,8 @@ footer.site-footer {
 }
 
 .unclaim-form button.red:hover {
-  background: #e85050;
-  color: #fff;
+  background: var(--blush);
+  color: var(--pixie);
 }
 
 /* Responsive */
@@ -594,7 +592,6 @@ footer.site-footer {
   align-items: center;
   padding: 1rem;
   background: var(--blush);
-  color: var(--ivory);
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
@@ -606,6 +603,11 @@ footer.site-footer {
 
 .unclaim-form button {
   background: #fc6b6b;
+}
+
+.unclaim-form button:hover {
+  background: var(--pink);
+  color: #fc6b6b;
 }
 
 .manager-section .form-group {
@@ -695,10 +697,24 @@ footer.site-footer {
   font-size: 0.9rem;
 }
 
-/* ✅ Fixed claimed item behavior */
 .is-claimed {
-  opacity: 0.6;
+  background: #fceeee;
+  border-color: #e3bcbc;
 }
+
+.is-claimed img {
+  filter: grayscale(20%);
+}
+
+.is-claimed .claim-form button {
+  display: none;
+}
+
+.is-claimed button {
+  pointer-events: auto;
+  opacity: 1;
+}
+
 
 /* Only disable the CLAIM button inside claimed cards */
 .is-claimed .claim-form button {
@@ -712,4 +728,68 @@ footer.site-footer {
   z-index: 2;
   pointer-events: auto;
   cursor: pointer;
+}
+
+/* ========== Edit Item Page ========== */
+.edit-item-page {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding: 2rem;
+}
+
+.edit-card {
+  width: 100%;
+  max-width: 500px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  border: 1px solid #eee;
+}
+
+.edit-card h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.4rem;
+}
+
+.edit-card .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.edit-card label {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.edit-card input,
+.edit-card select,
+.edit-card textarea {
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background: #fafafa;
+}
+
+.edit-item-preview {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 12px;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.no-image-msg {
+  color: #777;
+  font-style: italic;
+}
+
+.full-width {
+  text-align: center;
+  width: 100%;
+  margin-top: 1rem;
 }

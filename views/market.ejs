@@ -49,7 +49,7 @@
   <div class="item-grid">
     <% if (items && items.length > 0) { %>
       <% items.forEach(item => { %>
-        <div class="item-card <%= item.userID ? 'is-claimed' : '' %>">
+        <div class="item-card <%= item.userID ? 'is-claimed' : '' %>" data-item-id="<%= item.itemID %>">
           <img
             src="<%= item.itemImagePath || '/images/default.jpg' %>"
             alt="<%= item.itemName %>"
@@ -58,25 +58,33 @@
           <h3><%= item.itemName %></h3>
           <p><%= item.itemDesc %></p>
 
-          <div class="claimed-status">
+          <em><span class="claim-text">
             <% if (item.userID) { %>
-              <span class="claimed">
-                Claimed by <%= item.claimedBy || 'someone' %>
-              </span>
-            <% } else { %>
+              Claimed by <%= (item.userID === user.userID) ? 'you' : 'someone' %>
+            <% } %>
+          </span></em>
+
+          <div class="claimed-status">
+            <% if (!item.userID) { %>
               <form action="/claim/<%= item.itemID %>" method="POST" class="claim-form">
                 <button type="submit" class="btn small">Claim Item</button>
               </form>
-            <% } %>
-            <% if (user.role === 'M') { %>
-              <form action="/item/<%= item.itemID %>/edit" method="GET" class="edit-form">
-                <button type="submit" class="btn btn-danger small">Edit Item</button>
+            <% } else if (item.userID === user.userID) { %>
+              <form action="/unclaim/<%= item.itemID %>" method="POST" class="unclaim-form">
+                <button type="submit" class="btn btn-danger">Unclaim</button>
               </form>
-              <form action="/item/<%= item.itemID %>/delete" method="POST" class="delete-form">
-                <button type="submit" class="btn btn-danger small">Delete Item</button>
+            <% } %>
+
+            <% if (user.role === 'M') { %>
+              <form class="edit-form" action="/item/<%= item.itemID %>/edit" method="GET">
+                <button class="btn small btn-danger">Edit</button>
+              </form>
+              <form class="delete-form" action="/item/<%= item.itemID %>/delete" method="POST">
+                <button class="btn small btn-danger">Delete</button>
               </form>
             <% } %>
           </div>
+
         </div>
       <% }) %>
     <% } else { %>

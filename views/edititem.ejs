@@ -1,52 +1,63 @@
 <%- include('partials/header', { title: title, loggedIn: loggedIn }) %>
 
 <section class="edit-item-page">
-  <div class="form-card">
+  <div class="form-card edit-card">
 
     <h2>Edit Item</h2>
 
     <form action="/item/<%= item.itemID %>/edit" method="POST" enctype="multipart/form-data">
 
-      <label for="itemName">Item Name</label>
-      <input
-        type="text"
-        id="itemName"
-        name="itemName"
-        value="<%= item.itemName %>"
-        required
-      />
+      <div class="form-group">
+        <label for="itemName">Item Name</label>
+        <input
+          type="text"
+          id="itemName"
+          name="itemName"
+          value="<%= item.itemName %>"
+          required
+        />
+      </div>
 
-      <label for="itemDesc">Description</label>
-      <textarea
-        id="itemDesc"
-        name="itemDesc"
-        rows="4"
-        required
-      ><%= item.itemDesc %></textarea>
+      <div class="form-group">
+        <label for="itemDesc">Description</label>
+        <textarea
+          id="itemDesc"
+          name="itemDesc"
+          rows="4"
+          required
+        ><%= item.itemDesc %></textarea>
+      </div>
 
-      <label for="category">Category</label>
-      <select id="category" name="category">
-        <option value="furniture" <%= item.category === 'furniture' ? 'selected' : '' %>>Furniture</option>
-        <option value="jewelry" <%= item.category === 'jewelry' ? 'selected' : '' %>>Jewelry</option>
-        <option value="keepsakes" <%= item.category === 'keepsakes' ? 'selected' : '' %>>Keepsakes</option>
-        <option value="books" <%= item.category === 'books' ? 'selected' : '' %>>Books & Letters</option>
-      </select>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" name="category">
+          <option value="furniture" <%= item.category === 'furniture' ? 'selected' : '' %>>Furniture</option>
+          <option value="jewelry" <%= item.category === 'jewelry' ? 'selected' : '' %>>Jewelry</option>
+          <option value="keepsakes" <%= item.category === 'keepsakes' ? 'selected' : '' %>>Keepsakes</option>
+          <option value="books" <%= item.category === 'books' ? 'selected' : '' %>>Books & Letters</option>
+        </select>
+      </div>
 
-      <label>Current Image</label>
-      <% if (item.itemImagePath) { %>
-        <img src="<%= item.itemImagePath %>" alt="Current item image" class="edit-item-preview" />
-      <% } else { %>
-        <p>No image uploaded.</p>
-      <% } %>
+      <div class="form-group">
+        <label>Current Image</label>
 
-      <label for="image">Upload New Image (optional)</label>
-      <input type="file" id="image" name="image" />
+        <% if (item.itemImagePath) { %>
+          <img src="<%= item.itemImagePath %>" alt="Current item image" class="edit-item-preview" />
+        <% } else { %>
+          <p class="no-image-msg">No image uploaded.</p>
+        <% } %>
+      </div>
 
-      <button type="submit" class="btn btn-primary">Save Changes</button>
+      <div class="form-group">
+        <label for="image">Upload New Image (optional)</label>
+        <input type="file" id="image" name="image" />
+      </div>
+
+      <button type="submit" class="btn btn-primary full-width">Save Changes</button>
 
     </form>
 
-    <a href="/market" class="btn btn-secondary">Cancel</a>
+    <a href="/market" class="btn btn-secondary full-width">Cancel</a>
 
   </div>
 </section>

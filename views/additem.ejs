@@ -1,7 +1,7 @@
 <%- include('partials/header', { title: "Add Item | Connie’s Trinkets", loggedIn: loggedIn }) %>
 
-<section class="add-item-page">
-  <div class="form-card">
+<section class="edit-item-page">
+  <div class="form-card edit-card">
 
     <h2>Add New Item</h2>
 
@@ -11,28 +11,46 @@
 
     <form action="/item/add" method="POST" enctype="multipart/form-data">
 
-      <label for="itemName">Item Name</label>
-      <input type="text" id="itemName" name="itemName" required />
+      <div class="form-group">
+        <label for="itemName">Item Name</label>
+        <input
+          type="text"
+          id="itemName"
+          name="itemName"
+          required
+        />
+      </div>
 
-      <label for="itemDesc">Description</label>
-      <textarea id="itemDesc" name="itemDesc" rows="4" required></textarea>
+      <div class="form-group">
+        <label for="itemDesc">Description</label>
+        <textarea
+          id="itemDesc"
+          name="itemDesc"
+          rows="4"
+          required
+        ></textarea>
+      </div>
 
-      <label for="category">Category</label>
-      <select id="category" name="category" required>
-        <option value="furniture">Furniture</option>
-        <option value="jewelry">Jewelry</option>
-        <option value="keepsakes">Keepsakes</option>
-        <option value="books">Books & Letters</option>
-      </select>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+          <option value="furniture">Furniture</option>
+          <option value="jewelry">Jewelry</option>
+          <option value="keepsakes">Keepsakes</option>
+          <option value="books">Books & Letters</option>
+        </select>
+      </div>
 
-      <label for="image">Item Image</label>
-      <input type="file" id="image" name="image" />
+      <div class="form-group">
+        <label for="image">Upload Image</label>
+        <input type="file" id="image" name="image" />
+      </div>
 
-      <button type="submit" class="btn btn-primary">Add Item</button>
+      <button type="submit" class="btn btn-primary full-width">Add Item</button>
 
     </form>
 
-    <a href="/account" class="btn btn-secondary">Back to Account</a>
+    <a href="/market" class="btn btn-secondary full-width">Cancel</a>
 
   </div>
 </section>

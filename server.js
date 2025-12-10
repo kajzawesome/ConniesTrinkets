@@ -234,7 +234,7 @@ app.post("/unclaim/:id", async (req, res) => {
       console.warn(`Unclaim failed: item ${itemId} not owned by user ${userId}`);
     }
 
-    res.redirect("/account");
+    res.redirect("/market");
   } catch (err) {
     console.error("Unclaim error:", err);
     res.status(500).send("Server Error");

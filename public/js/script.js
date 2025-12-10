@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Claim item via AJAX
 document.addEventListener("DOMContentLoaded", () => {
   const claimForms = document.querySelectorAll(".claim-form");
   
@@ -43,8 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await fetch(action, { method: "POST", credentials: 'same-origin' });
         if (res.ok) {
           const card = form.closest(".item-card");
-          card.classList.add("claimed-item");
-          card.querySelector(".claimed-status").innerHTML = `<span class="claimed">Claimed by You</span>`;
+          card.classList.add("is-claimed");
+          card.querySelector(".claim-text").innerHTML = "Claimed by you";
+          form.remove();
+          const status = card.querySelector(".claimed-status");
+          status.insertAdjacentHTML("afterbegin", `
+            <form action="/unclaim/${card.dataset.itemId}" method="POST" class="unclaim-form">
+              <button type="submit" class="btn btn-danger small">Unclaim</button>
+            </form>`);
         } else {
           alert("Error claiming item.");
         }
