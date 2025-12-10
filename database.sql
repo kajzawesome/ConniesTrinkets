@@ -27,8 +27,8 @@ CREATE TABLE items (
     PRIMARY KEY ("itemID")
 );
 
-INSERT INTO items ("itemName", "itemDesc", category) VALUES
-    ('Porcelain Teacup', 'From her 50th anniversary trip to England.', 'keepsakes'),
-    ('Quilt Blanket', 'Handmade with love by Grandma.', 'keepsakes'),
-    ('Photo Album', 'Family memories through the years.', 'books'),
-    ('Silver Necklace', 'Gift from Grandpa on their 40th anniversary.', 'jewelry');
+INSERT INTO items ("itemName", "itemDesc", category, "itemImagePath") VALUES
+    ('Porcelain Teacup', 'From her 50th anniversary trip to England.', 'keepsakes', '/uploads/1765346675124-398974655.webp'),
+    ('Quilt Blanket', 'Handmade with love by Grandma.', 'keepsakes', '/uploads/1765346619967-569269074.jpg'),
+    ('Photo Album', 'Family memories through the years.', 'books', '/uploads/1765346576414-792317014.jpg'),
+    ('Silver Necklace', 'Gift from Grandpa on their 40th anniversary.', 'jewelry', '/uploads/1765346529707-657069166.jpg');
