@@ -1,0 +1,40 @@
+<%- include('partials/header', { title: "Add Item | Connie’s Trinkets", loggedIn: loggedIn }) %>
+
+<section class="add-item-page">
+  <div class="form-card">
+
+    <h2>Add New Item</h2>
+
+    <% if (error) { %>
+      <div class="error-box"><%= error %></div>
+    <% } %>
+
+    <form action="/items" method="POST" enctype="multipart/form-data">
+
+      <label for="itemName">Item Name</label>
+      <input type="text" id="itemName" name="itemName" required />
+
+      <label for="itemDesc">Description</label>
+      <textarea id="itemDesc" name="itemDesc" rows="4" required></textarea>
+
+      <label for="category">Category</label>
+      <select id="category" name="category" required>
+        <option value="furniture">Furniture</option>
+        <option value="jewelry">Jewelry</option>
+        <option value="keepsakes">Keepsakes</option>
+        <option value="books">Books & Letters</option>
+      </select>
+
+      <label for="image">Item Image</label>
+      <input type="file" id="image" name="image" />
+
+      <button type="submit" class="btn btn-primary">Add Item</button>
+
+    </form>
+
+    <a href="/account" class="btn btn-secondary">Back to Account</a>
+
+  </div>
+</section>
+
+<%- include('partials/footer') %>

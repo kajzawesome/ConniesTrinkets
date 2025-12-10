@@ -68,6 +68,13 @@
                 <button type="submit" class="btn small">Claim Item</button>
               </form>
             <% } %>
+            <% if (user.role === 'M') { %>
+              <form action="/item/<%= item.itemID %>/edit" method="GET" class="edit-form">
+                <button type="submit" class="btn btn-danger small">Edit Item</button>
+              </form>
+              <form action="/item/<%= item.itemID %>/delete" method="POST" class="delete-form">
+                <button type="submit" class="btn btn-danger small">Delete Item</button>
+              </form>
           </div>
         </div>
       <% }) %>
